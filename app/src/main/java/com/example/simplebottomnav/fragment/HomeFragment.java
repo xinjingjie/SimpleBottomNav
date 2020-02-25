@@ -1,28 +1,31 @@
 package com.example.simplebottomnav.fragment;
 
-import androidx.lifecycle.ViewModelProviders;
-
-import android.animation.ObjectAnimator;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-
-import com.example.simplebottomnav.viewmodel.HomeViewModel;
+import com.example.simplebottomnav.Adapter.PicAdapter;
 import com.example.simplebottomnav.R;
+import com.example.simplebottomnav.bean.PhotoItem;
+import com.example.simplebottomnav.viewmodel.HomeViewModel;
+
+import java.util.List;
 
 public class HomeFragment extends Fragment {
-
     private HomeViewModel mViewModel;
-    private ImageView imageView;
-
+    private RecyclerView recyclerView;
+    private PicAdapter picAdapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
     public static HomeFragment newInstance() {
         return new HomeFragment();
     }
@@ -31,33 +34,60 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment, container, false);
-        imageView = view.findViewById(R.id.imageView);
+        recyclerView = view.findViewById(R.id.picsrecycleView);
+        swipeRefreshLayout = view.findViewById(R.id.swipeHome);
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(requireActivity()).get(HomeViewModel.class);
+        mViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(HomeViewModel.class);
         // TODO: Use the ViewModel
 
-        final ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(imageView, "rotation", 0, 0);
-        objectAnimator.setDuration(1000);
-        imageView.setRotation(mViewModel.rotationPosition);
-        imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-            public void onClick(View v) {
-                if ( !objectAnimator.isRunning() ) {
-                    //Log.d("sssssssssssssss", "onClick: "+imageView.getRotation());
-                    objectAnimator.setFloatValues(imageView.getRotation(), imageView.getRotation() + 120);
-                   mViewModel.rotationPosition +=120;
-
-                    objectAnimator.start();
-                   // Log.d("sssssssssssssss", "onClick: "+imageView.getRotation());
-               }
+        recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 1));
+        picAdapter = new PicAdapter();
+        recyclerView.setAdapter(picAdapter);
+//        mViewModel.fetchData(new VolleyCallBack() {
+//            @Override
+//            public void onSuccess(List<PhotoItem> result) {
+//
+//            }
+//        });
+//
+        mViewModel.setPhotoListLive("what2");
+        mViewModel.getPhotoListLive().observe(getViewLifecycleOwner(), new Observer<List<PhotoItem>>() {
+            @Override
+            public void onChanged(List<PhotoItem> photoItems) {
+                picAdapter.submitList(photoItems);
+                if ( swipeRefreshLayout.isRefreshing() ) {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mViewModel.setPhotoListLive("apple");
             }
         });
 
     }
+
+//    @Override
+//    public void onSuccess(List<PhotoItem> result) {
+//        Log.d("did", "onSuccess: ??"+result);
+//        this.result=result;
+//        mViewModel.photoListLive.setValue(result);
+//        Log.d("did", "onSuccess: "+mViewModel.photoListLive);
+//        mViewModel.photoListLive.observe(getViewLifecycleOwner(), new Observer<List<PhotoItem>>() {
+//            @Override
+//            public void onChanged(List<PhotoItem> photoItems) {
+//                picAdapter.submitList(photoItems);
+//            }
+//        });
+
+
+//    }
 
 }
