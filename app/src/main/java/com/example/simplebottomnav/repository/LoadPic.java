@@ -41,7 +41,7 @@ public class LoadPic {
                     @Override
                     public void onResponse(String response) {
                         photoLiveData.setValue(new Gson().fromJson(response, Pixabay.class).getHits());
-                        Log.d("did", "fetchData: success");
+                        Log.d("did", "fetchData: success" + new Gson().fromJson(response, Pixabay.class).getTotalHits());
 
                     }
                 },
@@ -59,6 +59,6 @@ public class LoadPic {
 
     private String getUrl(String key) {
         Log.d("did", "getUrl: " + key);
-        return "https://pixabay.com/api/?key=14808073-70a71eb74f498799436435a14&q=" + key;
+        return "https://pixabay.com/api/?key=14808073-70a71eb74f498799436435a14&q=" + key + "&image_type=photo";
     }
 }

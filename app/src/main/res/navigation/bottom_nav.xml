@@ -33,14 +33,38 @@
         android:id="@+id/searchFragment"
         android:name="com.example.simplebottomnav.fragment.SearchFragment"
         android:label="Search"
-        tools:layout="@layout/search_fragment" />
+        tools:layout="@layout/search_fragment">
+        <action
+            android:id="@+id/action_searchFragment_self"
+            app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_searchUserFragment"
+            app:destination="@id/searchUserFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_searchPicFragment"
+            app:destination="@id/searchPicFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_searchTagFragment"
+            app:destination="@id/searchTagFragment" />
+    </fragment>
     <fragment
         android:id="@+id/detailPicFragment2"
         android:name="com.example.simplebottomnav.fragment.DetailPicFragment"
         android:label="fragment_detail_pic"
-        tools:layout="@layout/fragment_detail_pic">
-        <action
-            android:id="@+id/action_detailPicFragment2_to_homeFragment"
-            app:destination="@id/homeFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_detail_pic" />
+    <fragment
+        android:id="@+id/searchUserFragment"
+        android:name="com.example.simplebottomnav.fragment.viewpager.SearchUserFragment"
+        android:label="search_user_fragment"
+        tools:layout="@layout/search_user_fragment" />
+    <fragment
+        android:id="@+id/searchPicFragment"
+        android:name="com.example.simplebottomnav.fragment.viewpager.SearchPicFragment"
+        android:label="search_pic_fragment"
+        tools:layout="@layout/search_pic_fragment" />
+    <fragment
+        android:id="@+id/searchTagFragment"
+        android:name="com.example.simplebottomnav.fragment.viewpager.SearchTagFragment"
+        android:label="search_tag_fragment"
+        tools:layout="@layout/search_tag_fragment" />
 </navigation>

@@ -1,6 +1,7 @@
 package com.example.simplebottomnav.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +18,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.simplebottomnav.Adapter.PicAdapter;
 import com.example.simplebottomnav.R;
 import com.example.simplebottomnav.bean.PhotoItem;
-import com.example.simplebottomnav.viewmodel.HomeViewModel;
+import com.example.simplebottomnav.viewmodel.PicViewModel;
 
 import java.util.List;
 
 public class HomeFragment extends Fragment {
-    private HomeViewModel mViewModel;
+    private PicViewModel mViewModel;
     private RecyclerView recyclerView;
     private PicAdapter picAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -42,7 +43,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(HomeViewModel.class);
+        mViewModel = new ViewModelProvider(requireActivity(), new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(PicViewModel.class);
         // TODO: Use the ViewModel
 
         recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 1));
@@ -55,16 +56,20 @@ public class HomeFragment extends Fragment {
 //            }
 //        });
 //
-        mViewModel.setPhotoListLive("what2");
+
         mViewModel.getPhotoListLive().observe(getViewLifecycleOwner(), new Observer<List<PhotoItem>>() {
             @Override
             public void onChanged(List<PhotoItem> photoItems) {
+                Log.d("did", "onChanged: " + photoItems.size());
                 picAdapter.submitList(photoItems);
                 if ( swipeRefreshLayout.isRefreshing() ) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
             }
         });
+        if ( mViewModel.getPhotoListLive().getValue() == null ) {
+            mViewModel.setPhotoListLive("cat");
+        }
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

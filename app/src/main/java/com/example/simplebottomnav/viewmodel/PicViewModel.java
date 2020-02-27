@@ -5,19 +5,17 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.example.simplebottomnav.bean.PhotoItem;
 import com.example.simplebottomnav.repository.LoadPic;
 
 import java.util.List;
 
-public class HomeViewModel extends AndroidViewModel {
+public class PicViewModel extends AndroidViewModel {
     // TODO: Implement the ViewModel
     LoadPic loadPic;
-    private MutableLiveData<List<PhotoItem>> photoListLive = new MutableLiveData<>();
 
-    public HomeViewModel(@NonNull Application application) {
+    public PicViewModel(@NonNull Application application) {
         super(application);
         loadPic = new LoadPic(application.getApplicationContext());
 
