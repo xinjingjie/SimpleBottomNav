@@ -10,16 +10,26 @@ public class PhotoItem implements Parcelable {
     private String tags;
     private String webformatURL;
     private String largeImageURL;
+    private String user;
+    private int user_id;
+    private String userImageURL;
     private int likes;
     private int comments;
+    private int webformatHeight;
+    private int webformatWidth;
 
     protected PhotoItem(Parcel in) {
         id = in.readInt();
         tags = in.readString();
         webformatURL = in.readString();
         largeImageURL = in.readString();
+        user = in.readString();
+        user_id = in.readInt();
+        userImageURL = in.readString();
         likes = in.readInt();
         comments = in.readInt();
+        webformatHeight = in.readInt();
+        webformatWidth = in.readInt();
     }
 
     @Override
@@ -28,8 +38,13 @@ public class PhotoItem implements Parcelable {
         dest.writeString(tags);
         dest.writeString(webformatURL);
         dest.writeString(largeImageURL);
+        dest.writeString(user);
+        dest.writeInt(user_id);
+        dest.writeString(userImageURL);
         dest.writeInt(likes);
         dest.writeInt(comments);
+        dest.writeInt(webformatHeight);
+        dest.writeInt(webformatWidth);
     }
 
     @Override
@@ -49,6 +64,7 @@ public class PhotoItem implements Parcelable {
         }
     };
 
+
     @Override
     public boolean equals(Object o) {
         if ( this == o ) return true;
@@ -57,6 +73,7 @@ public class PhotoItem implements Parcelable {
         return id == photoItem.id &&
                 likes == photoItem.likes &&
                 comments == photoItem.comments &&
+                webformatHeight == photoItem.webformatHeight &&
                 Objects.equals(tags, photoItem.tags) &&
                 Objects.equals(webformatURL, photoItem.webformatURL) &&
                 Objects.equals(largeImageURL, photoItem.largeImageURL);
@@ -64,7 +81,7 @@ public class PhotoItem implements Parcelable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tags, webformatURL, largeImageURL, likes, comments);
+        return Objects.hash(id, tags, webformatURL, largeImageURL, user, user_id, likes, comments, webformatHeight);
     }
 
     public int getId() {
@@ -103,7 +120,7 @@ public class PhotoItem implements Parcelable {
         this.webformatURL = webformatURL;
     }
 
-    public void setLargeImageUR(String largeImageUR) {
+    public void setLargeImageURL(String largeImageUR) {
         this.largeImageURL = largeImageUR;
     }
 
@@ -113,5 +130,45 @@ public class PhotoItem implements Parcelable {
 
     public void setComments(int comments) {
         this.comments = comments;
+    }
+
+    public int getWebformatHeight() {
+        return webformatHeight;
+    }
+
+    public void setWebformatHeight(int webformatHeight) {
+        this.webformatHeight = webformatHeight;
+    }
+
+    public int getWebformatWidth() {
+        return webformatWidth;
+    }
+
+    public void setWebformatWidth(int webformatWidth) {
+        this.webformatWidth = webformatWidth;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
+    }
+
+    public String getUserImageURL() {
+        return userImageURL;
+    }
+
+    public void setUserImageURL(String userImageURL) {
+        this.userImageURL = userImageURL;
     }
 }

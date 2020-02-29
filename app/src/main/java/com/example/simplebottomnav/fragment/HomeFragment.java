@@ -21,6 +21,7 @@ import com.example.simplebottomnav.bean.PhotoItem;
 import com.example.simplebottomnav.viewmodel.PicViewModel;
 
 import java.util.List;
+import java.util.Random;
 
 public class HomeFragment extends Fragment {
     private PicViewModel mViewModel;
@@ -47,7 +48,8 @@ public class HomeFragment extends Fragment {
         // TODO: Use the ViewModel
 
         recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 1));
-        picAdapter = new PicAdapter();
+        picAdapter = new PicAdapter("homeFragment");
+        Log.d("what", "onActivityCreated: ");
         recyclerView.setAdapter(picAdapter);
 //        mViewModel.fetchData(new VolleyCallBack() {
 //            @Override
@@ -68,17 +70,27 @@ public class HomeFragment extends Fragment {
             }
         });
         if ( mViewModel.getPhotoListLive().getValue() == null ) {
-            mViewModel.setPhotoListLive("cat");
+            mViewModel.setPhotoListLive(getFreshKey());
         }
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mViewModel.setPhotoListLive("apple");
+                mViewModel.setPhotoListLive(getFreshKey());
             }
         });
 
     }
 
+    public String getFreshKey() {
+        String[] strings = {"popular", "cat", "dog", "flower", "earth",
+                "sky", "animals", "people", "nature", "ocean",
+                "young", "spark", "sunset", "amazing", "tree",
+                "happy", "rock", "happiness", "technology", "car",
+                "bear", "girl", "beauty", "rain", "cloud",
+                "sunrise", "romance", "children", "world", "plane"
+        };
+        return strings[new Random().nextInt(30)];
+    }
 //    @Override
 //    public void onSuccess(List<PhotoItem> result) {
 //        Log.d("did", "onSuccess: ??"+result);

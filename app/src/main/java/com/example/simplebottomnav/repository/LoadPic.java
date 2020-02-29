@@ -59,6 +59,8 @@ public class LoadPic {
 
     private String getUrl(String key) {
         Log.d("did", "getUrl: " + key);
-        return "https://pixabay.com/api/?key=14808073-70a71eb74f498799436435a14&q=" + key + "&image_type=photo";
+        return "https://pixabay.com/api/?key=14808073-70a71eb74f498799436435a14&q=" + key +
+                //"&order=latest" +
+                "&per_page=40&image_type=photo";
     }
 }

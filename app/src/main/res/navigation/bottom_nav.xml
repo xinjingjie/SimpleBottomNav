@@ -46,6 +46,9 @@
         <action
             android:id="@+id/action_searchFragment_to_searchTagFragment"
             app:destination="@id/searchTagFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_detailPicFragment2"
+            app:destination="@id/detailPicFragment2" />
     </fragment>
     <fragment
         android:id="@+id/detailPicFragment2"
