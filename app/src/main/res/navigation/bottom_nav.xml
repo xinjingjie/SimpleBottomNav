@@ -57,17 +57,17 @@
         tools:layout="@layout/fragment_detail_pic" />
     <fragment
         android:id="@+id/searchUserFragment"
-        android:name="com.example.simplebottomnav.fragment.viewpager.SearchUserFragment"
+        android:name="com.example.simplebottomnav.fragment.search_viewpager.SearchUserFragment"
         android:label="search_user_fragment"
         tools:layout="@layout/search_user_fragment" />
     <fragment
         android:id="@+id/searchPicFragment"
-        android:name="com.example.simplebottomnav.fragment.viewpager.SearchPicFragment"
+        android:name="com.example.simplebottomnav.fragment.search_viewpager.SearchPicFragment"
         android:label="search_pic_fragment"
         tools:layout="@layout/search_pic_fragment" />
     <fragment
         android:id="@+id/searchTagFragment"
-        android:name="com.example.simplebottomnav.fragment.viewpager.SearchTagFragment"
+        android:name="com.example.simplebottomnav.fragment.search_viewpager.SearchTagFragment"
         android:label="search_tag_fragment"
         tools:layout="@layout/search_tag_fragment" />
 </navigation>

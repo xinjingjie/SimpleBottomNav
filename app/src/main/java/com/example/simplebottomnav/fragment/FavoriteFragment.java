@@ -30,7 +30,7 @@ public class FavoriteFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     ImageView imageView;
     String url1 = "https://cdn.pixabay.com/photo/2018/03/19/13/43/feedback-3240007_1280.jpg";
-    String url2 = "https://cdn.pixabay.com/photo/2015/10/24/11/09/drop-of-water-1004250_1280.jpg";
+    String url2 = "http://192.168.2.107:8080/image/e3e7b1da86cdcd6426de1b2d4dda3a17/266de9db-2fd2-46e2-9d55-6b1fc18a90f3.gif";
     private static final String TAG = "FavoriteFragment";
     public static FavoriteFragment newInstance() {
         return new FavoriteFragment();

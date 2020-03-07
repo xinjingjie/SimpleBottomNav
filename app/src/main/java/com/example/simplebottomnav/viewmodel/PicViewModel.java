@@ -14,7 +14,7 @@ import java.util.List;
 public class PicViewModel extends AndroidViewModel {
     // TODO: Implement the ViewModel
     LoadPic loadPic;
-
+    boolean isToScrollTop = true;
     public PicViewModel(@NonNull Application application) {
         super(application);
         loadPic = new LoadPic(application.getApplicationContext());
@@ -27,6 +27,23 @@ public class PicViewModel extends AndroidViewModel {
 
     public void setPhotoListLive(String key) {
         loadPic.setPhotoLiveData(key);
+    }
+
+    public void setToScrollTop(boolean toScrollTop) {
+        isToScrollTop = toScrollTop;
+    }
+
+    public boolean getIsToScrollTop() {
+        return isToScrollTop;
+    }
+
+    public void resetData() {
+        isToScrollTop = true;
+        loadPic.resetQuery();
+    }
+
+    public LiveData<Integer> getDataState() {
+        return loadPic.getLoadState();
     }
     //    public void fetchData(final VolleyCallBack callback){
 //        StringRequest stringRequest=new StringRequest(

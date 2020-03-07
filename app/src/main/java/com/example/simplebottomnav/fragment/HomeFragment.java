@@ -1,7 +1,6 @@
 package com.example.simplebottomnav.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,25 +8,21 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.simplebottomnav.Adapter.PicAdapter;
 import com.example.simplebottomnav.R;
-import com.example.simplebottomnav.bean.PhotoItem;
+import com.example.simplebottomnav.fragment.home_viewpager.Recommend_home_Fragment;
+import com.example.simplebottomnav.fragment.home_viewpager.Subscribed_home_Fragment;
 import com.example.simplebottomnav.viewmodel.PicViewModel;
-
-import java.util.List;
-import java.util.Random;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 public class HomeFragment extends Fragment {
     private PicViewModel mViewModel;
-    private RecyclerView recyclerView;
-    private PicAdapter picAdapter;
-    private SwipeRefreshLayout swipeRefreshLayout;
+    private ViewPager2 viewPager2;
+    private TabLayout tabLayout;
     public static HomeFragment newInstance() {
         return new HomeFragment();
     }
@@ -36,75 +31,48 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment, container, false);
-        recyclerView = view.findViewById(R.id.picsrecycleView);
-        swipeRefreshLayout = view.findViewById(R.id.swipeHome);
+        viewPager2 = view.findViewById(R.id.viewPager2_home);
+        tabLayout = view.findViewById(R.id.tab_layout_home);
+
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         mViewModel = new ViewModelProvider(requireActivity(), new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(PicViewModel.class);
-        // TODO: Use the ViewModel
-
-        recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 1));
-        picAdapter = new PicAdapter("homeFragment");
-        Log.d("what", "onActivityCreated: ");
-        recyclerView.setAdapter(picAdapter);
-//        mViewModel.fetchData(new VolleyCallBack() {
-//            @Override
-//            public void onSuccess(List<PhotoItem> result) {
-//
-//            }
-//        });
-//
-
-        mViewModel.getPhotoListLive().observe(getViewLifecycleOwner(), new Observer<List<PhotoItem>>() {
+        viewPager2.setAdapter(new FragmentStateAdapter(requireActivity()) {
             @Override
-            public void onChanged(List<PhotoItem> photoItems) {
-                Log.d("did", "onChanged: " + photoItems.size());
-                picAdapter.submitList(photoItems);
-                if ( swipeRefreshLayout.isRefreshing() ) {
-                    swipeRefreshLayout.setRefreshing(false);
+            public int getItemCount() {
+                return 2;
+            }
+
+            @NonNull
+            @Override
+            public Fragment createFragment(int position) {
+                switch (position) {
+                    case 0:
+                        return new Recommend_home_Fragment();
+                    default:
+                        return new Subscribed_home_Fragment();
                 }
             }
         });
-        if ( mViewModel.getPhotoListLive().getValue() == null ) {
-            mViewModel.setPhotoListLive(getFreshKey());
-        }
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager2, new TabLayoutMediator.TabConfigurationStrategy() {
             @Override
-            public void onRefresh() {
-                mViewModel.setPhotoListLive(getFreshKey());
+            public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
+                switch (position) {
+                    case 0:
+                        tab.setText("推荐");
+                        break;
+                    case 1:
+                        tab.setText("关注");
+                        break;
+                }
             }
         });
-
+        tabLayoutMediator.attach();
     }
-
-    public String getFreshKey() {
-        String[] strings = {"popular", "cat", "dog", "flower", "earth",
-                "sky", "animals", "people", "nature", "ocean",
-                "young", "spark", "sunset", "amazing", "tree",
-                "happy", "rock", "happiness", "technology", "car",
-                "bear", "girl", "beauty", "rain", "cloud",
-                "sunrise", "romance", "children", "world", "plane"
-        };
-        return strings[new Random().nextInt(30)];
-    }
-//    @Override
-//    public void onSuccess(List<PhotoItem> result) {
-//        Log.d("did", "onSuccess: ??"+result);
-//        this.result=result;
-//        mViewModel.photoListLive.setValue(result);
-//        Log.d("did", "onSuccess: "+mViewModel.photoListLive);
-//        mViewModel.photoListLive.observe(getViewLifecycleOwner(), new Observer<List<PhotoItem>>() {
-//            @Override
-//            public void onChanged(List<PhotoItem> photoItems) {
-//                picAdapter.submitList(photoItems);
-//            }
-//        });
-
-
-//    }
 
 }

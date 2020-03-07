@@ -1,57 +1,101 @@
 package com.example.simplebottomnav.fragment;
 
-import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.example.simplebottomnav.LoginActivity;
 import com.example.simplebottomnav.R;
+import com.example.simplebottomnav.databinding.AccountFragmentBinding;
 import com.example.simplebottomnav.viewmodel.AccountViewModel;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class AccountFragment extends Fragment {
 
     private AccountViewModel mViewModel;
-    private ImageView imageView;
-    public static AccountFragment newInstance() {
-        return new AccountFragment();
+    AccountFragmentBinding binding;
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.account_fragment, container, false);
-        imageView = view.findViewById(R.id.imageView);
+        //  View view = inflater.inflate(R.layout.account_fragment, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.account_fragment, container, false);
+        View view = binding.getRoot();
         return view;
     }
 
     @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout_button:
+                Log.d("TAG", "onOptionsItemSelected: ");
+                AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+                builder.setTitle("确定要退出吗?");
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(getContext(), LoginActivity.class);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }
+                });
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                builder.show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.account_menu, menu);
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         super.onActivityCreated(savedInstanceState);
+
         mViewModel = ViewModelProviders.of(this).get(AccountViewModel.class);
         // TODO: Use the ViewModel
-        final ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(imageView, "rotation", 0, 0);
-        objectAnimator.setDuration(1000);
-        imageView.setRotation(mViewModel.rotationPosition);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if ( !objectAnimator.isRunning() ) {
-                    //Log.d("sssssssssssssss", "onClick: "+imageView.getRotation());
-                    objectAnimator.setFloatValues(imageView.getRotation(), imageView.getRotation() + 120);
-                    mViewModel.rotationPosition += 120;
 
-                    objectAnimator.start();
-                    // Log.d("sssssssssssssss", "onClick: "+imageView.getRotation());
-                }
-            }
-        });
+        SharedPreferences preference = getActivity().getSharedPreferences("login_info",
+                MODE_PRIVATE);
+        String pre_username = preference.getString("username", null);
+        binding.username.setText(pre_username);
+        binding.fansNumber.setText(String.valueOf(preference.getInt("fans_number", 0)));
+        binding.picNumber.setText(String.valueOf(preference.getInt("pic_number", 0)));
+        binding.subNumber.setText(String.valueOf(preference.getInt("sub_number", 0)));
     }
 
 }

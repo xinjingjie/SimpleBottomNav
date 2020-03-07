@@ -1,4 +1,4 @@
-package com.example.simplebottomnav.fragment.viewpager;
+package com.example.simplebottomnav.fragment.search_viewpager;
 
 import androidx.lifecycle.ViewModel;
 

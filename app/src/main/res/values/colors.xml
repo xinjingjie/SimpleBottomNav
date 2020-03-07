@@ -3,4 +3,23 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <color name="primary">#FFEA82</color>
+    <color name="primary_dark">#FAB983</color>
+    <color name="primary_darker">#F8AE76</color>
+    <!--    <color name="primary">#87CEFA</color>-->
+    <!--    <color name="primary_dark">#00BFFF</color>-->
+    <!--    <color name="primary_darker">#4682B4</color>-->
+    <color name="sky_blue">#30B0CD</color>
+    <color name="accent">#FFFFFF</color>
+
+    <color name="black">#000000</color>
+    <color name="jet">#222222</color>
+    <color name="oil">#333333</color>
+    <color name="monsoon">#777777</color>
+    <color name="jumbo">#888888</color>
+    <color name="aluminum">#999999</color>
+    <color name="base">#AAAAAA</color>
+    <color name="iron">#CCCCCC</color>
+    <color name="white">#FFFFFF</color>
 </resources>

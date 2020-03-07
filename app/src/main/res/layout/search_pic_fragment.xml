@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="2dp"
-    tools:context=".fragment.viewpager.SearchPicFragment">
+    tools:context=".fragment.search_viewpager.SearchPicFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_pic_recyclerView"

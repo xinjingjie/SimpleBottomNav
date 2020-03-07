@@ -26,4 +26,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         return navController.navigateUp();
     }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 }

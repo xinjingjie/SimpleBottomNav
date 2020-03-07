@@ -22,9 +22,9 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.simplebottomnav.R;
-import com.example.simplebottomnav.fragment.viewpager.SearchPicFragment;
-import com.example.simplebottomnav.fragment.viewpager.SearchTagFragment;
-import com.example.simplebottomnav.fragment.viewpager.SearchUserFragment;
+import com.example.simplebottomnav.fragment.search_viewpager.SearchPicFragment;
+import com.example.simplebottomnav.fragment.search_viewpager.SearchTagFragment;
+import com.example.simplebottomnav.fragment.search_viewpager.SearchUserFragment;
 import com.example.simplebottomnav.viewmodel.SearchViewModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -50,8 +50,8 @@ public class SearchFragment extends Fragment implements MaterialSearchBar.OnSear
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.search_fragment, container, false);
-        viewPager2 = view.findViewById(R.id.viewpager2);
-        tabLayout = view.findViewById(R.id.tab_layout);
+        viewPager2 = view.findViewById(R.id.viewpager2_search);
+        tabLayout = view.findViewById(R.id.tab_layout_search);
         searchBar = view.findViewById(R.id.searchBar);
         return view;
     }

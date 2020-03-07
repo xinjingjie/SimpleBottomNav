@@ -5,7 +5,7 @@
     android:id="@+id/search_tag_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.viewpager.SearchTagFragment">
+    tools:context=".fragment.search_viewpager.SearchTagFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_tag_recyclerView"

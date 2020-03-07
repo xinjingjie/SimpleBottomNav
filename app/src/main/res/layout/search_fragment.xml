@@ -51,9 +51,10 @@
 
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_layout"
+        android:id="@+id/tab_layout_search"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:tabIndicatorColor="@color/mr_cast_progressbar_background_light">
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
@@ -71,8 +72,15 @@
             android:text="Wednesday" />
     </com.google.android.material.tabs.TabLayout>
 
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        android:backgroundTint="@color/mr_cast_route_divider_dark" />
+
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewpager2"
+        android:id="@+id/viewpager2_search"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

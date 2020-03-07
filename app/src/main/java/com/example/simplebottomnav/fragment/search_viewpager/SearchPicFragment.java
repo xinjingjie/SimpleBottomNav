@@ -1,4 +1,4 @@
-package com.example.simplebottomnav.fragment.viewpager;
+package com.example.simplebottomnav.fragment.search_viewpager;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.example.simplebottomnav.Adapter.PicAdapter;
+import com.example.simplebottomnav.Adapter.SearchPicAdapter;
 import com.example.simplebottomnav.R;
 import com.example.simplebottomnav.bean.PhotoItem;
 
@@ -23,7 +23,7 @@ import java.util.List;
 public class SearchPicFragment extends Fragment {
     private static String search_word;
     private static SearchPicViewModel mViewModel;
-    private PicAdapter picAdapter;
+    private SearchPicAdapter picAdapter;
     private RecyclerView recyclerView;
     public static int result;
 
@@ -51,7 +51,7 @@ public class SearchPicFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(requireActivity(), new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(SearchPicViewModel.class);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-        picAdapter = new PicAdapter("searchPicFragment");
+        picAdapter = new SearchPicAdapter(mViewModel);
         recyclerView.setAdapter(picAdapter);
         mViewModel.getPhotoListLive().observe(getViewLifecycleOwner(), new Observer<List<PhotoItem>>() {
             @Override

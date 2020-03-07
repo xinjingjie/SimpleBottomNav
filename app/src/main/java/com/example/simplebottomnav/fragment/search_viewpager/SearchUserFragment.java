@@ -1,4 +1,4 @@
-package com.example.simplebottomnav.fragment.viewpager;
+package com.example.simplebottomnav.fragment.search_viewpager;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,24 +12,24 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.simplebottomnav.R;
 
-public class SearchTagFragment extends Fragment {
+public class SearchUserFragment extends Fragment {
 
-    private SearchTagViewModel mViewModel;
+    private SearchUserViewModel mViewModel;
 
-    public static SearchTagFragment newInstance() {
-        return new SearchTagFragment();
+    public static SearchUserFragment newInstance() {
+        return new SearchUserFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.search_tag_fragment, container, false);
+        return inflater.inflate(R.layout.search_user_fragment, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(SearchTagViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(SearchUserViewModel.class);
         // TODO: Use the ViewModel
     }
 

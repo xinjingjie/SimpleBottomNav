@@ -1,13 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/swipeHome"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".fragment.HomeFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/picsrecycleView"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout_home"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabIndicatorColor="@color/mr_cast_progressbar_background_light">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="推荐" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="关注" />
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        android:backgroundTint="@color/mr_cast_progressbar_background_light" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager2_home"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</LinearLayout>
