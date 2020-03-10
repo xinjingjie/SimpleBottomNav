@@ -6,7 +6,7 @@ public class GetPicKey {
     static private String leastKey;
 
     static public String getFreshKey() {
-        String[] strings = {"popular", "cat", "dog", "flower", "earth",
+        String[] strings = {"popular", "tea", "dog", "flower", "earth",
                 "sky", "animals", "people", "nature", "ocean",
                 "young", "spark", "sunset", "amazing", "tree",
                 "happy", "rock", "happiness", "technology", "car",

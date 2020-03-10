@@ -10,8 +10,12 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        dataBinding{
+        dataBinding {
             enabled true
+        }
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
         }
     }
     buildTypes {
@@ -49,4 +53,10 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     annotationProcessor 'com.jakewharton:butterknife:10.0.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
+    implementation 'com.google.android.gms:play-services-ads:19.0.0'
+    implementation 'com.github.clans:fab:1.6.4'
+    def camerax_version = '1.0.0-alpha06'
+    implementation "androidx.camera:camera-core:${camerax_version}"
+    implementation "androidx.camera:camera-camera2:${camerax_version}"
+    implementation 'androidx.test.espresso:espresso-accessibility:3.3.0-alpha04'
 }

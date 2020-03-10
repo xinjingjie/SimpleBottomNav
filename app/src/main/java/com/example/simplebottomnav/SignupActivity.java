@@ -209,7 +209,7 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     static class LogUpTask extends AsyncTask {
-        private final static String path = "http://192.168.2.107:8080/api/user/testRegister";
+        private final static String path = "http://112.124.44.175:8080/api/user/testRegister";
 
         @Override
         protected Object doInBackground(Object[] objects) {

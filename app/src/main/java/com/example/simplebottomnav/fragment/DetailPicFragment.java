@@ -69,7 +69,7 @@ public class DetailPicFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_detail_pic, container, false);
+        View view = inflater.inflate(R.layout.detail_pic, container, false);
 
         photoView = view.findViewById(R.id.Detail_Pic);
         shimmerLayout = view.findViewById(R.id.Shimmer_detail_pic);

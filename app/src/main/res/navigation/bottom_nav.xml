@@ -13,22 +13,23 @@
         <action
             android:id="@+id/action_homeFragment_to_detailPicFragment2"
             app:destination="@id/detailPicFragment2" />
+        <action
+            android:id="@+id/action_homeFragment_to_postPicFragment"
+            app:destination="@id/postPicFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_detailCommentsFragment"
+            app:destination="@id/detailCommentsFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/addFragment"
-        android:name="com.example.simplebottomnav.fragment.AddFragment"
-        android:label="Add"
-        tools:layout="@layout/add_fragment" />
     <fragment
         android:id="@+id/accountFragment"
         android:name="com.example.simplebottomnav.fragment.AccountFragment"
         android:label="Account"
         tools:layout="@layout/account_fragment" />
     <fragment
-        android:id="@+id/favoriteFragment"
-        android:name="com.example.simplebottomnav.fragment.FavoriteFragment"
+        android:id="@+id/exploreFragment"
+        android:name="com.example.simplebottomnav.fragment.NotifyFragment"
         android:label="Favorite"
-        tools:layout="@layout/favorite_fragment" />
+        tools:layout="@layout/notify_fragment" />
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.simplebottomnav.fragment.SearchFragment"
@@ -54,7 +55,7 @@
         android:id="@+id/detailPicFragment2"
         android:name="com.example.simplebottomnav.fragment.DetailPicFragment"
         android:label="fragment_detail_pic"
-        tools:layout="@layout/fragment_detail_pic" />
+        tools:layout="@layout/detail_pic" />
     <fragment
         android:id="@+id/searchUserFragment"
         android:name="com.example.simplebottomnav.fragment.search_viewpager.SearchUserFragment"
@@ -70,4 +71,13 @@
         android:name="com.example.simplebottomnav.fragment.search_viewpager.SearchTagFragment"
         android:label="search_tag_fragment"
         tools:layout="@layout/search_tag_fragment" />
+    <fragment
+        android:id="@+id/postPicFragment"
+        android:name="com.example.simplebottomnav.fragment.PostPicFragment"
+        android:label="PostPicFragment" />
+    <fragment
+        android:id="@+id/detailCommentsFragment"
+        android:name="com.example.simplebottomnav.fragment.DetailCommentsFragment"
+        android:label="fragment_detail_comments"
+        tools:layout="@layout/fragment_detail_comments" />
 </navigation>

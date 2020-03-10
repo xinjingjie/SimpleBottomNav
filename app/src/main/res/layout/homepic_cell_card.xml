@@ -15,7 +15,7 @@
 
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/userbotton"
+            android:id="@+id/userImage"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="8dp"
@@ -30,9 +30,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/userbotton"
-            app:layout_constraintStart_toEndOf="@+id/userbotton"
-            app:layout_constraintTop_toTopOf="@+id/userbotton"
+            app:layout_constraintBottom_toBottomOf="@+id/userImage"
+            app:layout_constraintStart_toEndOf="@+id/userImage"
+            app:layout_constraintTop_toTopOf="@+id/userImage"
             tools:text="username" />
 
         <io.supercharge.shimmerlayout.ShimmerLayout
@@ -42,7 +42,7 @@
             app:layout_constraintBottom_toTopOf="@+id/function_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/userbotton">
+            app:layout_constraintTop_toBottomOf="@+id/userImage">
 
             <ImageView
                 android:id="@+id/imageView"

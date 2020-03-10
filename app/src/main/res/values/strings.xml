@@ -5,4 +5,14 @@
     <string name="loadPic">waiting Loading</string>
     <string name="loading">Loading...</string>
     <string name="login_info">login_info</string>
+    <string name="item1">举报</string>
+    <string name="item2">举报</string>
+    <string name="item3">举报</string>
+
+    <string-array name="spinner_array">
+        <item />
+        <item>@string/item1</item>
+        <item>@string/item2</item>
+        <item>@string/item3</item>
+    </string-array>
 </resources>

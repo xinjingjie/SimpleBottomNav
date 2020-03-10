@@ -34,7 +34,6 @@ public class SearchPicFragment extends Fragment {
     public static void setSearch_word(String search_word) {
         SearchPicFragment.search_word = search_word;
         Log.d("search", "onActivityCreated: " + search_word);
-
         mViewModel.setPhotoListLive(search_word);
     }
 
@@ -53,7 +52,7 @@ public class SearchPicFragment extends Fragment {
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         picAdapter = new SearchPicAdapter(mViewModel);
         recyclerView.setAdapter(picAdapter);
-        mViewModel.getPhotoListLive().observe(getViewLifecycleOwner(), new Observer<List<PhotoItem>>() {
+        mViewModel.getSearchPhotoLiveData().observe(getViewLifecycleOwner(), new Observer<List<PhotoItem>>() {
             @Override
             public void onChanged(List<PhotoItem> photoItems) {
                 Log.d("did", "onChanged: " + photoItems.size());

@@ -21,26 +21,29 @@ import com.example.simplebottomnav.bean.PhotoItem;
 import com.example.simplebottomnav.repository.GetPicKey;
 import com.example.simplebottomnav.repository.LoadPic;
 import com.example.simplebottomnav.viewmodel.PicViewModel;
+import com.github.clans.fab.FloatingActionMenu;
 
 import java.util.List;
 
-public class Recommend_home_Fragment extends Fragment {
+public class RecommerdFragment extends Fragment {
 
     private PicViewModel mViewModel;
     private RecyclerView recyclerView;
-    private PicAdapter picAdapter;
+    private PicAdapter picAdapter1;
+    private PicAdapter picAdapter2;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private FloatingActionMenu addButton;
 
-    public static Recommend_home_Fragment newInstance() {
-        return new Recommend_home_Fragment();
+    public static RecommerdFragment newInstance() {
+        return new RecommerdFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.recommend_home__fragment, container, false);
-        recyclerView = view.findViewById(R.id.home_recommed_recyclerView);
-        swipeRefreshLayout = view.findViewById(R.id.swipeHome_recom);
+        View view = inflater.inflate(R.layout.recommerd_fragment, container, false);
+        recyclerView = view.findViewById(R.id.home_recyclerView);
+        swipeRefreshLayout = view.findViewById(R.id.swipeHome);
         return view;
     }
 
@@ -48,22 +51,25 @@ public class Recommend_home_Fragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(requireActivity(), new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(PicViewModel.class);
+        // TODO: Use the ViewModel
+        addButton = requireActivity().findViewById(R.id.addButton);
         recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 1));
-        picAdapter = new PicAdapter(mViewModel);
+        picAdapter1 = new PicAdapter(mViewModel, PicAdapter.NORMAL_VIEW);
+        picAdapter2 = new PicAdapter(mViewModel, PicAdapter.CARD_VIEW);
         Log.d("what", "onActivityCreated: ");
-        recyclerView.setAdapter(picAdapter);
-
+        recyclerView.setAdapter(picAdapter1);
         mViewModel.getPhotoListLive().observe(getViewLifecycleOwner(), new Observer<List<PhotoItem>>() {
             @Override
             public void onChanged(List<PhotoItem> photoItems) {
                 Log.d("did", "onChanged: " + photoItems.size());
                 if (mViewModel.getIsToScrollTop()) {
                     Log.d("did", "scrollToTop");
-                    recyclerView.scrollToPosition(0);
+                    recyclerView.smoothScrollToPosition(0);
+
                     mViewModel.setToScrollTop(false);
                 }
-
-                picAdapter.submitList(photoItems);
+                picAdapter2.submitList(photoItems);
+                picAdapter1.submitList(photoItems);
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
@@ -73,8 +79,10 @@ public class Recommend_home_Fragment extends Fragment {
             @Override
             public void onChanged(Integer integer) {
                 Log.d("TAG", "onChanged:--- " + integer);
-                picAdapter.setFooter_state(integer);
-                picAdapter.notifyItemChanged(picAdapter.getItemCount() - 1);
+                picAdapter1.setFooter_state(integer);
+                picAdapter2.setFooter_state(integer);
+                picAdapter2.notifyItemChanged(picAdapter2.getItemCount() - 1);
+                picAdapter1.notifyItemChanged(picAdapter1.getItemCount() - 1);
                 if (integer == LoadPic.NETWORK_ERROR) {
                     if (swipeRefreshLayout.isRefreshing()) {
                         swipeRefreshLayout.setRefreshing(false);
@@ -89,18 +97,33 @@ public class Recommend_home_Fragment extends Fragment {
             @Override
             public void onRefresh() {
                 Log.d("did", "onRefresh: scrollToTop");
-                recyclerView.scrollToPosition(0);
+                recyclerView.smoothScrollToPosition(0);
                 mViewModel.resetData();
                 mViewModel.setPhotoListLive(GetPicKey.getFreshKey());
 
             }
         });
-
-
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                switch (newState) {
+                    case RecyclerView.SCROLL_STATE_IDLE:
+                        addButton.setVisibility(View.VISIBLE);
+                        break;
+                    case RecyclerView.SCROLL_STATE_SETTLING:
+                    case RecyclerView.SCROLL_STATE_DRAGGING:
+                        addButton.setVisibility(View.INVISIBLE);
+                        break;
+
+
+                }
+            }
+
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+
                 if (dy < 0) {
                     return;
                 }
@@ -114,7 +137,6 @@ public class Recommend_home_Fragment extends Fragment {
                 }
             }
         });
-
     }
 
 }

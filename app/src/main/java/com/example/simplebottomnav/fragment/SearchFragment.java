@@ -30,9 +30,6 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class SearchFragment extends Fragment implements MaterialSearchBar.OnSearchActionListener {
     // private MySuggestionsAdapter mySuggestionsAdapter;
     private SearchViewModel mViewModel;
@@ -40,7 +37,6 @@ public class SearchFragment extends Fragment implements MaterialSearchBar.OnSear
     private ViewPager2 viewPager2;
     private TabLayout tabLayout;
     private MaterialSearchBar searchBar;
-    private List<String> suggestions = new ArrayList<>();
 
     public static SearchFragment newInstance() {
         return new SearchFragment();
@@ -68,7 +64,6 @@ public class SearchFragment extends Fragment implements MaterialSearchBar.OnSear
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
         // TODO: Use the ViewModel
-//        MyFragmentStateAdapter adapter=new MyFragmentStateAdapter(getActivity());
         viewPager2.setAdapter(new FragmentStateAdapter(requireActivity()) {
             @Override
             public int getItemCount() {
@@ -106,13 +101,9 @@ public class SearchFragment extends Fragment implements MaterialSearchBar.OnSear
             }
         });
         tabLayoutMediator.attach();
-        //  LayoutInflater inflater = (LayoutInflater) requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        // mySuggestionsAdapter=new MySuggestionsAdapter(inflater);
-        //  searchBar.setCustomSuggestionAdapter(mySuggestionsAdapter);
         searchBar.setMaxSuggestionCount(2);
         searchBar.setHint("Find Pictures..");
         searchBar.setCardViewElevation(10);
-        //   mySuggestionsAdapter.setSuggestions(suggestions);
         searchBar.onClick(requireView());
         searchBar.setOnSearchActionListener(this);
         searchBar.addTextChangeListener(new TextWatcher() {
@@ -140,11 +131,6 @@ public class SearchFragment extends Fragment implements MaterialSearchBar.OnSear
 
     @Override
     public void onSearchConfirmed(CharSequence text) {
-//        Bundle bundle=new Bundle();
-//        bundle.putString("search_word",searchBar.getText());
-//        Log.d("TAG", "onSearchConfirmed: 搜索"+searchBar.getText());
-//        NavController navController = Navigation.findNavController(getView());
-//        navController.navigate(R.id.action_searchFragment_to_searchPicFragment, bundle);
         search_word = searchBar.getText();
         SearchPicFragment.setSearch_word(search_word);
         final Handler handler = new Handler();
@@ -159,7 +145,7 @@ public class SearchFragment extends Fragment implements MaterialSearchBar.OnSear
                 }
             }
         };
-        handler.postDelayed(runnable, 2000);
+        handler.postDelayed(runnable, 5000);
 
     }
 
@@ -169,8 +155,6 @@ public class SearchFragment extends Fragment implements MaterialSearchBar.OnSear
             case MaterialSearchBar.BUTTON_BACK:
                 Navigation.findNavController(requireView()).navigate(R.id.action_searchFragment_self);
                 break;
-//                searchBar.closeSearch();
-//                break;
             case MaterialSearchBar.BUTTON_NAVIGATION:
                 Toast.makeText(requireActivity(), "暂时没用", Toast.LENGTH_SHORT).show();
                 Log.d("TAG", "onButtonClicked: ");
@@ -178,32 +162,4 @@ public class SearchFragment extends Fragment implements MaterialSearchBar.OnSear
     }
 
 
-//static class MyFragmentStateAdapter extends FragmentStateAdapter{
-//    FragmentActivity fragmentActivity;
-//
-//    public MyFragmentStateAdapter(@NonNull FragmentActivity fragmentActivity) {
-//        super(fragmentActivity);
-//        this.fragmentActivity=fragmentActivity;
-//    }
-//
-//    @NonNull
-//    @Override
-//    public Fragment createFragment(int position) {
-//        switch (position){
-//            case 0:
-//                if ( fragmentActivity==null )
-//                Log.d("TAG", "fragmentFragment is null ");
-//                return new SearchPicFragment();
-//            case 1:
-//                return new SearchTagFragment();
-//            default:
-//                return new SearchUserFragment();
-//        }
-//    }
-//
-//    @Override
-//    public int getItemCount() {
-//        return 3;
-//    }
-//}
 }

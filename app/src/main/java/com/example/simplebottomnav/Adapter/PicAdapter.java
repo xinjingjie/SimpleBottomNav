@@ -6,9 +6,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -41,12 +43,15 @@ public class PicAdapter extends ListAdapter<PhotoItem, RecyclerView.ViewHolder> 
     static int NORMAL_VIEW_TYPE = 0;
     static int FOOTER_VIEW_TYPE = 1;
     private int footer_state = LoadPic.CAN_LOAD_MORE;
+    public final static int CARD_VIEW = 0;
+    public final static int NORMAL_VIEW = 1;
+    private int style;
 
     public void setFooter_state(int footer_state) {
         this.footer_state = footer_state;
     }
 
-    public PicAdapter(ViewModel viewModel) {
+    public PicAdapter(ViewModel viewModel, int style) {
         super(new DiffUtil.ItemCallback<PhotoItem>() {
             @Override
             public boolean areItemsTheSame(@NonNull PhotoItem oldItem, @NonNull PhotoItem newItem) {
@@ -56,14 +61,11 @@ public class PicAdapter extends ListAdapter<PhotoItem, RecyclerView.ViewHolder> 
             @Override
             public boolean areContentsTheSame(@NonNull PhotoItem oldItem, @NonNull PhotoItem newItem) {
                 return oldItem.equals(newItem);
-//                        &&oldItem.getComments()==newItem.getComments()
-//                        &&oldItem.getLargeImageUR().equals(newItem.getLargeImageUR())
-//                        &&oldItem.getLikes()==newItem.getLikes()
-//                        &&oldItem.getTags().equals(newItem.getTags())
-//                        &&oldItem.getWebformatURL().equals(newItem.getWebformatURL());
+
             }
         });
         this.viewModel = viewModel;
+        this.style = style;
     }
 
     @Override
@@ -85,15 +87,25 @@ public class PicAdapter extends ListAdapter<PhotoItem, RecyclerView.ViewHolder> 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         final RecyclerView.ViewHolder holder;
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        final View view;
         if (viewType == NORMAL_VIEW_TYPE) {
-            final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_pic_cell, parent, false);
+            if (style == CARD_VIEW) {
+                view = layoutInflater.inflate(R.layout.homepic_cell_card, parent, false);
+            } else {
+                view = layoutInflater.inflate(R.layout.homepic_cell_normal, parent, false);
+
+
+            }
             holder = new PicViewHolder(view);
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
+            PicViewHolder picHolder = (PicViewHolder) holder;
+
+            picHolder.shimmerLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Log.d("TAG", "onClick: ");
                     Bundle bundle = new Bundle();
-                    bundle.putParcelable("Detail_Pic", getItem(holder.getAdapterPosition()));
+                    bundle.putParcelable("Detail_Pic", getItem(picHolder.getAdapterPosition()));
                     NavController navController = Navigation.findNavController(view);
                     navController.navigate(R.id.action_homeFragment_to_detailPicFragment2, bundle);
                     //   navController.navigate(R.id.action_searchFragment_to_detailPicFragment2, bundle);
@@ -101,9 +113,35 @@ public class PicAdapter extends ListAdapter<PhotoItem, RecyclerView.ViewHolder> 
                 }
 
             });
+            /*
+            下拉选项   optionMenu或者ContextMenu
+             */
+            picHolder.spinner_button.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    Log.d("TAG", "onItemSelected: +++++++++");
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+
+            /*
+            查看评论
+             */
+            picHolder.viewComments.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    NavController navController = Navigation.findNavController(view);
+                    navController.navigate(R.id.action_homeFragment_to_detailCommentsFragment);
+                }
+            });
+
         } else {
-            final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_pic_footer, parent, false);
-            holder = new FooterViewHolder(view);
+            final View view2 = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_pic_footer, parent, false);
+            holder = new FooterViewHolder(view2);
 //            StaggeredGridLayoutManager.LayoutParams layoutParams = (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
 //            layoutParams.setFullSpan(true);
 
@@ -199,12 +237,12 @@ public class PicAdapter extends ListAdapter<PhotoItem, RecyclerView.ViewHolder> 
     // public abstract static class PicViewHolder
     static class PicViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
-        ShimmerLayout shimmerLayout;
+        public ShimmerLayout shimmerLayout;
         ImageButton likeButton, messageButton;
         CircleImageView userButton;
-        TextView likeText, messageText, picDescription, userName;
+        TextView likeText, messageText, picDescription, userName, viewComments;
         ConstraintLayout function_layout;
-
+        Spinner spinner_button;
         private PicViewHolder(@NonNull View itemView) {
             super(itemView);
             shimmerLayout = itemView.findViewById(R.id.shimmersw);
@@ -215,8 +253,10 @@ public class PicAdapter extends ListAdapter<PhotoItem, RecyclerView.ViewHolder> 
             messageText = itemView.findViewById(R.id.messageText);
             picDescription = itemView.findViewById(R.id.pic_description);
             function_layout = itemView.findViewById(R.id.function_layout);
-            userButton = itemView.findViewById(R.id.userbotton);
+            userButton = itemView.findViewById(R.id.userImage);
             userName = itemView.findViewById(R.id.user_name);
+            spinner_button = itemView.findViewById(R.id.spinner_button);
+            viewComments = itemView.findViewById(R.id.viewComments);
         }
     }
 

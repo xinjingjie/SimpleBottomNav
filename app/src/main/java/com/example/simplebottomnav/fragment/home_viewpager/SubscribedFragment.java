@@ -12,24 +12,24 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.simplebottomnav.R;
 
-public class Subscribed_home_Fragment extends Fragment {
+public class SubscribedFragment extends Fragment {
 
-    private SubscribedHomeViewModel mViewModel;
+    private SubscribedViewModel mViewModel;
 
-    public static Subscribed_home_Fragment newInstance() {
-        return new Subscribed_home_Fragment();
+    public static SubscribedFragment newInstance() {
+        return new SubscribedFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.subscribed_home_fragment, container, false);
+        return inflater.inflate(R.layout.subscribed_fragment, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(SubscribedHomeViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(SubscribedViewModel.class);
         // TODO: Use the ViewModel
     }
 
