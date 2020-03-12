@@ -16,12 +16,18 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.example.simplebottomnav.Adapter.UserPicAdapter;
 import com.example.simplebottomnav.LoginActivity;
 import com.example.simplebottomnav.R;
+import com.example.simplebottomnav.bean.Picture;
 import com.example.simplebottomnav.databinding.AccountFragmentBinding;
 import com.example.simplebottomnav.viewmodel.AccountViewModel;
+
+import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -29,10 +35,13 @@ public class AccountFragment extends Fragment {
 
     private AccountViewModel mViewModel;
     AccountFragmentBinding binding;
+    private UserPicAdapter picAdapter;
+    boolean isFlesh = true;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d("pic", "onViewCreated: --------------------------");
     }
 
     @Override
@@ -51,8 +60,7 @@ public class AccountFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         super.onActivityCreated(savedInstanceState);
-
-        mViewModel = ViewModelProviders.of(this).get(AccountViewModel.class);
+        mViewModel = new ViewModelProvider(requireActivity(), new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(AccountViewModel.class);
         // TODO: Use the ViewModel
 
         SharedPreferences preference = getActivity().getSharedPreferences("login_info",
@@ -106,6 +114,25 @@ public class AccountFragment extends Fragment {
                 }
             }
 
+        });
+        int uid = preference.getInt("UID", 0);
+        binding.userPics.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+
+        mViewModel.setPhotoListLive(String.valueOf(uid));
+        picAdapter = new UserPicAdapter();
+        binding.userPics.setAdapter(picAdapter);
+
+        mViewModel.getSearchPhotoLiveData().observe(getViewLifecycleOwner(), new Observer<List<Picture>>() {
+            @Override
+            public void onChanged(List<Picture> pictures) {
+                Log.d("pic", "onChanged: " + pictures.size());
+                if (isFlesh == true) {
+                    Log.d("pic", "onChanged: onflesh");
+                    picAdapter.submitList(pictures);
+                }
+
+                isFlesh = false;
+            }
         });
     }
 

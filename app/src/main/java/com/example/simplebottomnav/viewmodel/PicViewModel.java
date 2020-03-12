@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.example.simplebottomnav.bean.PhotoItem;
+import com.example.simplebottomnav.bean.Picture;
 import com.example.simplebottomnav.repository.LoadPic;
 
 import java.util.List;
@@ -21,12 +21,12 @@ public class PicViewModel extends AndroidViewModel {
 
     }
 
-    public LiveData<List<PhotoItem>> getPhotoListLive() {
+    public LiveData<List<Picture>> getPhotoListLive() {
         return loadPic.getPhotoLiveData();
     }
 
-    public void setPhotoListLive(String key) {
-        loadPic.setPhotoLiveData(key);
+    public void setPhotoListLive(int type, String key) {
+        loadPic.setPhotoLiveData(type, key);
     }
 
     public void setToScrollTop(boolean toScrollTop) {

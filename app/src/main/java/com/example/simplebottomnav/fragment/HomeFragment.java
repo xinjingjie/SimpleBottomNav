@@ -22,7 +22,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.simplebottomnav.MainActivity;
 import com.example.simplebottomnav.R;
-import com.example.simplebottomnav.fragment.home_viewpager.RecommerdFragment;
+import com.example.simplebottomnav.fragment.home_viewpager.RecommendFragment;
 import com.example.simplebottomnav.fragment.home_viewpager.SubscribedFragment;
 import com.example.simplebottomnav.viewmodel.PicViewModel;
 import com.github.clans.fab.FloatingActionButton;
@@ -80,7 +80,7 @@ public class HomeFragment extends Fragment {
             @Override
             public Fragment createFragment(int position) {
                 if (position == 0) {
-                    return new RecommerdFragment();
+                    return new RecommendFragment();
                 }
                 return new SubscribedFragment();
             }

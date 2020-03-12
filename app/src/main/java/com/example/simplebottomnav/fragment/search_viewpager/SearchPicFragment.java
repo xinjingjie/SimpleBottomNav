@@ -16,7 +16,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.example.simplebottomnav.Adapter.SearchPicAdapter;
 import com.example.simplebottomnav.R;
-import com.example.simplebottomnav.bean.PhotoItem;
+import com.example.simplebottomnav.bean.Picture;
+import com.example.simplebottomnav.repository.LoadPic;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class SearchPicFragment extends Fragment {
     public static void setSearch_word(String search_word) {
         SearchPicFragment.search_word = search_word;
         Log.d("search", "onActivityCreated: " + search_word);
-        mViewModel.setPhotoListLive(search_word);
+        mViewModel.setSearchPhotoLiveData(LoadPic.FIND_TYPE_CONTENT, search_word);
     }
 
     @Override
@@ -52,16 +53,23 @@ public class SearchPicFragment extends Fragment {
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         picAdapter = new SearchPicAdapter(mViewModel);
         recyclerView.setAdapter(picAdapter);
-        mViewModel.getSearchPhotoLiveData().observe(getViewLifecycleOwner(), new Observer<List<PhotoItem>>() {
+//        mViewModel.getSearchPhotoLiveData().observe(getViewLifecycleOwner(), new Observer<List<PhotoItem>>() {
+//            @Override
+//            public void onChanged(List<PhotoItem> photoItems) {
+//                Log.d("did", "onChanged: " + photoItems.size());
+//                result = photoItems.size();
+//                picAdapter.submitList(photoItems);
+//            }
+//        });
+//        String s=getActivity().getIntent().getStringExtra("search_word");
+        mViewModel.getSearchPhotoLiveData().observe(getViewLifecycleOwner(), new Observer<List<Picture>>() {
             @Override
-            public void onChanged(List<PhotoItem> photoItems) {
-                Log.d("did", "onChanged: " + photoItems.size());
-                result = photoItems.size();
-                picAdapter.submitList(photoItems);
+            public void onChanged(List<Picture> pictures) {
+                Log.d("did", "onChanged: " + pictures.size());
+                result = pictures.size();
+                picAdapter.submitList(pictures);
             }
         });
-//        String s=getActivity().getIntent().getStringExtra("search_word");
-
 
     }
 

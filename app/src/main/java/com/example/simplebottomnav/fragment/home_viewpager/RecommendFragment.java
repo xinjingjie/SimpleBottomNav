@@ -17,7 +17,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.simplebottomnav.Adapter.PicAdapter;
 import com.example.simplebottomnav.R;
-import com.example.simplebottomnav.bean.PhotoItem;
+import com.example.simplebottomnav.bean.Picture;
 import com.example.simplebottomnav.repository.GetPicKey;
 import com.example.simplebottomnav.repository.LoadPic;
 import com.example.simplebottomnav.viewmodel.PicViewModel;
@@ -25,7 +25,7 @@ import com.github.clans.fab.FloatingActionMenu;
 
 import java.util.List;
 
-public class RecommerdFragment extends Fragment {
+public class RecommendFragment extends Fragment {
 
     private PicViewModel mViewModel;
     private RecyclerView recyclerView;
@@ -34,8 +34,8 @@ public class RecommerdFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private FloatingActionMenu addButton;
 
-    public static RecommerdFragment newInstance() {
-        return new RecommerdFragment();
+    public static RecommendFragment newInstance() {
+        return new RecommendFragment();
     }
 
     @Override
@@ -58,18 +58,18 @@ public class RecommerdFragment extends Fragment {
         picAdapter2 = new PicAdapter(mViewModel, PicAdapter.CARD_VIEW);
         Log.d("what", "onActivityCreated: ");
         recyclerView.setAdapter(picAdapter1);
-        mViewModel.getPhotoListLive().observe(getViewLifecycleOwner(), new Observer<List<PhotoItem>>() {
+        mViewModel.getPhotoListLive().observe(getViewLifecycleOwner(), new Observer<List<Picture>>() {
             @Override
-            public void onChanged(List<PhotoItem> photoItems) {
-                Log.d("did", "onChanged: " + photoItems.size());
+            public void onChanged(List<Picture> pictures) {
+                Log.d("did", "onChanged: " + pictures.size());
                 if (mViewModel.getIsToScrollTop()) {
                     Log.d("did", "scrollToTop");
                     recyclerView.smoothScrollToPosition(0);
 
                     mViewModel.setToScrollTop(false);
                 }
-                picAdapter2.submitList(photoItems);
-                picAdapter1.submitList(photoItems);
+                picAdapter2.submitList(pictures);
+                picAdapter1.submitList(pictures);
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
@@ -91,7 +91,7 @@ public class RecommerdFragment extends Fragment {
             }
         });
         if (mViewModel.getPhotoListLive().getValue() == null) {
-            mViewModel.setPhotoListLive(GetPicKey.getFreshKey());
+            mViewModel.setPhotoListLive(LoadPic.FIND_TYPE_RECOMMEND, GetPicKey.getFreshKey());
         }
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -99,7 +99,7 @@ public class RecommerdFragment extends Fragment {
                 Log.d("did", "onRefresh: scrollToTop");
                 recyclerView.smoothScrollToPosition(0);
                 mViewModel.resetData();
-                mViewModel.setPhotoListLive(GetPicKey.getFreshKey());
+                mViewModel.setPhotoListLive(LoadPic.FIND_TYPE_RECOMMEND, GetPicKey.getFreshKey());
 
             }
         });
@@ -131,7 +131,7 @@ public class RecommerdFragment extends Fragment {
                 int position = layoutManager.findLastVisibleItemPosition();
                 if (position == recyclerView.getAdapter().getItemCount() - 1) {
                     if (mViewModel.getDataState().getValue() == LoadPic.CAN_LOAD_MORE || mViewModel.getDataState().getValue() == LoadPic.INIT_STATE) {
-                        mViewModel.setPhotoListLive(GetPicKey.getLeastKey());
+                        mViewModel.setPhotoListLive(LoadPic.FIND_TYPE_RECOMMEND, GetPicKey.getLeastKey());
                     }
                     //mViewModel.setPhotoListLive(GetPicKey.getFreshKey());
                 }

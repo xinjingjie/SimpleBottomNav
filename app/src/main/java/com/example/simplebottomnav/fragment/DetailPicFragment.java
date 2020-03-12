@@ -32,7 +32,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.simplebottomnav.R;
-import com.example.simplebottomnav.bean.PhotoItem;
+import com.example.simplebottomnav.bean.Picture;
 import com.github.chrisbanes.photoview.PhotoView;
 
 import java.io.IOException;
@@ -51,7 +51,7 @@ import io.supercharge.shimmerlayout.ShimmerLayout;
 public class DetailPicFragment extends Fragment {
     ShimmerLayout shimmerLayout;
     PhotoView photoView;
-    PhotoItem photoItem;
+    Picture picture;
     RequestBuilder requestBuilder;
     private final int REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     public DetailPicFragment() {
@@ -86,14 +86,14 @@ public class DetailPicFragment extends Fragment {
 
 
         if ( getArguments() != null ) {
-            photoItem = getArguments().<PhotoItem>getParcelable("Detail_Pic");
+            picture = getArguments().<Picture>getParcelable("Detail_Pic");
         } else {
             Log.d("DetailPicFragment", "getArguments IS NULL");
         }
 
         // Log.d("did", "onActivityCreated: " + getArguments().<PhotoItem>getParcelable("Detail_Pic").getLargeImageURL());
         requestBuilder = Glide.with(requireContext())
-                .load(photoItem.getLargeImageURL())
+                .load(picture.getLocation())
                 .placeholder(R.drawable.ic_photo_gray_24dp)
                 .listener(new RequestListener<Drawable>() {
                     @Override
@@ -174,8 +174,8 @@ public class DetailPicFragment extends Fragment {
         @Override
         protected Boolean doInBackground(Void... voids) {
             try {
-                Log.d("TAG", "savePhoto: " + photoItem.getLargeImageURL());
-                URL url = new URL(photoItem.getLargeImageURL());
+                Log.d("TAG", "savePhoto: " + picture.getLocation());
+                URL url = new URL(picture.getLocation());
                 InputStream inputStream = url.openStream();
                 Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
 

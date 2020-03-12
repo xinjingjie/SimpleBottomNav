@@ -5,45 +5,49 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.example.simplebottomnav.bean.PhotoItem;
-import com.example.simplebottomnav.bean.Pixabay;
+import com.example.simplebottomnav.bean.Picture;
+import com.example.simplebottomnav.bean.TotalPics;
+import com.example.simplebottomnav.repository.LoadPic;
 import com.example.simplebottomnav.repository.VolleySingleton;
 import com.google.gson.Gson;
 
 import java.util.List;
 
 public class SearchPicViewModel extends AndroidViewModel {
+
     VolleySingleton volleySingleton;
-    private MutableLiveData<List<PhotoItem>> searchPhotoLiveData = new MutableLiveData<List<PhotoItem>>();
+    private MutableLiveData<List<Picture>> searchPhotoLiveData = new MutableLiveData<List<Picture>>();
+
     public SearchPicViewModel(@NonNull Application application) {
         super(application);
         volleySingleton = VolleySingleton.getINSTANCE(application);
     }
 
 
-    public MutableLiveData<List<PhotoItem>> getSearchPhotoLiveData() {
+    public LiveData<List<Picture>> getSearchPhotoLiveData() {
         return searchPhotoLiveData;
     }
 
-    public void setPhotoListLive(String key) {
-        fetchData(key);
+    public void setSearchPhotoLiveData(int type, String key) {
+        fetchData(type, key);
     }
 
-    public void fetchData(String key) {
+    public void fetchData(int type, String key) {
         StringRequest stringRequest = new StringRequest(
                 StringRequest.Method.GET,
-                getUrl(key),
+                getUrl(type, key),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Pixabay pixabay = new Gson().fromJson(response, Pixabay.class);
-                        searchPhotoLiveData.setValue(pixabay.getHits());
-                        Log.d("did", "fetchData: success,TotalHits:" + pixabay.getTotalHits());
+                        TotalPics totalPics = new Gson().fromJson(response, TotalPics.class);
+                        searchPhotoLiveData.setValue(totalPics.getHits());
+                        Log.d("did", "fetchData: success,TotalHits:" + totalPics.getTotalHits());
 
                     }
                 },
@@ -58,9 +62,20 @@ public class SearchPicViewModel extends AndroidViewModel {
         volleySingleton.getQueue().add(stringRequest);
     }
 
-    private String getUrl(String key) {
+    private String getUrl(int type, String key) {
         Log.d("did", "getUrl: " + key);
-        return "https://pixabay.com/api/?key=14808073-70a71eb74f498799436435a14&q=" + key + "&per_page=" + 20;
+        switch (type) {
+            case LoadPic.FIND_TYPE_RECOMMEND:
+                return "http://192.168.2.107:8080/api/pic/getRecommend";
+            case LoadPic.FIND_TYPE_CONTENT:
+                return "http://192.168.2.107:8080/api/pic/getByContent?key=" + key;
+            case LoadPic.FIND_TYPE_TAG:
+                return "http://192.168.2.107:8080/api/pic/getByTag?key=" + key;
+            // case FIND_TYPE_USER:
+//                return "http://192.168.2.107:8080/api/pic/getByUser?key="+key;
+//            break;
+            default:
+                return null;
+        }
     }
-    // TODO: Implement the ViewModel
 }

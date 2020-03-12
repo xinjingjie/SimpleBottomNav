@@ -29,7 +29,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.simplebottomnav.R;
-import com.example.simplebottomnav.bean.PhotoItem;
+import com.example.simplebottomnav.bean.Picture;
 import com.example.simplebottomnav.repository.GetPicKey;
 import com.example.simplebottomnav.repository.LoadPic;
 import com.example.simplebottomnav.viewmodel.PicViewModel;
@@ -38,7 +38,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import io.supercharge.shimmerlayout.ShimmerLayout;
 
 
-public class PicAdapter extends ListAdapter<PhotoItem, RecyclerView.ViewHolder> {
+public class PicAdapter extends ListAdapter<Picture, RecyclerView.ViewHolder> {
     private ViewModel viewModel;
     static int NORMAL_VIEW_TYPE = 0;
     static int FOOTER_VIEW_TYPE = 1;
@@ -52,14 +52,14 @@ public class PicAdapter extends ListAdapter<PhotoItem, RecyclerView.ViewHolder> 
     }
 
     public PicAdapter(ViewModel viewModel, int style) {
-        super(new DiffUtil.ItemCallback<PhotoItem>() {
+        super(new DiffUtil.ItemCallback<Picture>() {
             @Override
-            public boolean areItemsTheSame(@NonNull PhotoItem oldItem, @NonNull PhotoItem newItem) {
-                return oldItem.getId() == newItem.getId();
+            public boolean areItemsTheSame(@NonNull Picture oldItem, @NonNull Picture newItem) {
+                return oldItem.getP_id() == newItem.getP_id();
             }
 
             @Override
-            public boolean areContentsTheSame(@NonNull PhotoItem oldItem, @NonNull PhotoItem newItem) {
+            public boolean areContentsTheSame(@NonNull Picture oldItem, @NonNull Picture newItem) {
                 return oldItem.equals(newItem);
 
             }
@@ -172,7 +172,7 @@ public class PicAdapter extends ListAdapter<PhotoItem, RecyclerView.ViewHolder> 
                         public void onClick(View v) {
                             PicViewModel picViewModel = (PicViewModel) viewModel;
                             picViewModel.resetData();
-                            picViewModel.setPhotoListLive(GetPicKey.getLeastKey());
+                            picViewModel.setPhotoListLive(LoadPic.FIND_TYPE_RECOMMEND, GetPicKey.getLeastKey());
                         }
                     });
                     break;
@@ -187,12 +187,11 @@ public class PicAdapter extends ListAdapter<PhotoItem, RecyclerView.ViewHolder> 
             shimmerLayout.setShimmerAngle(0);
             shimmerLayout.startShimmerAnimation();
             holder.likeText.setText(String.valueOf(getItem(position).getLikes()));
-            holder.picDescription.setText(getItem(position).getTags());
+            holder.picDescription.setText(getItem(position).getContent());
             holder.messageText.setText(String.valueOf(getItem(position).getComments()));
-            holder.userName.setText(getItem(position).getUser());
+            holder.userName.setText(getItem(position).getUsername());
             Glide.with(holder.imageView)
-                    .load(getItem(position)
-                            .getUserImageURL()
+                    .load(getItem(position).getProfile_picture()
                     ).listener(new RequestListener<Drawable>() {
                 @Override
                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -215,7 +214,7 @@ public class PicAdapter extends ListAdapter<PhotoItem, RecyclerView.ViewHolder> 
 
 
             Glide.with(holder.itemView)
-                    .load(getItem(position).getWebformatURL())
+                    .load(getItem(position).getLocation())
                     .placeholder(R.drawable.ic_photo_gray_24dp)
                     .listener(new RequestListener<Drawable>() {
                         @Override

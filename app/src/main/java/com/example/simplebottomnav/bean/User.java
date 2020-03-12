@@ -12,11 +12,11 @@ public class User {
     private int pic_number;
     private int fans_number;
     private int sub_number;
-
+    private String profile_picture;
     public User() {
     }
 
-    public User(String username, String gender, String password, int age, String create_time, String telephone, String email, int pic_number) {
+    public User(String username, String gender, String password, int age, String create_time, String telephone, String email, int pic_number, String profile_picture) {
         this.username = username;
         this.gender = gender;
         this.password = password;
@@ -25,9 +25,10 @@ public class User {
         this.telephone = telephone;
         this.email = email;
         this.pic_number = pic_number;
+        this.profile_picture = profile_picture;
     }
 
-    public User(String username, String gender, String password, int age, String create_time, String telephone, String email, int pic_number, int fans_number, int sub_number) {
+    public User(String username, String gender, String password, int age, String create_time, String telephone, String email, int pic_number, int fans_number, int sub_number, String profile_picture) {
         this.username = username;
         this.gender = gender;
         this.password = password;
@@ -38,6 +39,15 @@ public class User {
         this.pic_number = pic_number;
         this.fans_number = fans_number;
         this.sub_number = sub_number;
+        this.profile_picture = profile_picture;
+    }
+
+    public String getProfile_picture() {
+        return profile_picture;
+    }
+
+    public void setProfile_picture(String profile_picture) {
+        this.profile_picture = profile_picture;
     }
 
     public int getUid() {

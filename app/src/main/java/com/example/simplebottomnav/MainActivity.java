@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setTitle("");
+//        setTitle("");
         BottomNavigationView bottomNavigationView=findViewById(R.id.bottomNavigationView);
         navController = Navigation.findNavController(this, R.id.fragment);
         NavigationUI.setupWithNavController(bottomNavigationView,navController);
@@ -64,9 +64,10 @@ public class MainActivity extends AppCompatActivity {
                 if (isAndroidQ) {
                     // Android 10 使用图片uri加载
                     Bundle bundle = new Bundle();
+                    Log.d("TAG", "onActivityResult: " + mCameraUri.toString());
                     bundle.putString("IMAGEURL", mCameraUri.toString());
                     NavController navController = Navigation.findNavController(this, R.id.fragment);
-                    navController.navigate(R.id.action_homeFragment_to_postPicFragment);
+                    navController.navigate(R.id.action_homeFragment_to_postPicFragment, bundle);
                 } else {
                     // 使用图片路径加载
                     //picture.setImageBitmap();
@@ -141,7 +142,8 @@ public class MainActivity extends AppCompatActivity {
      * 创建保存图片的文件
      */
     private File createImageFile() throws IOException {
-        String imageName = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String date = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String imageName = date + ".jpg";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         if (!storageDir.exists()) {
             storageDir.mkdir();
