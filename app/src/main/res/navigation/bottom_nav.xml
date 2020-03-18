@@ -19,12 +19,19 @@
         <action
             android:id="@+id/action_homeFragment_to_detailCommentsFragment"
             app:destination="@id/detailCommentsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_accountFragment"
+            app:destination="@id/accountFragment" />
     </fragment>
     <fragment
         android:id="@+id/accountFragment"
         android:name="com.example.simplebottomnav.fragment.AccountFragment"
         android:label="Account"
-        tools:layout="@layout/account_fragment" />
+        tools:layout="@layout/account_fragment">
+        <action
+            android:id="@+id/action_accountFragment_to_detailPicFragment2"
+            app:destination="@id/detailPicFragment2" />
+    </fragment>
     <fragment
         android:id="@+id/exploreFragment"
         android:name="com.example.simplebottomnav.fragment.NotifyFragment"
@@ -55,7 +62,11 @@
         android:id="@+id/detailPicFragment2"
         android:name="com.example.simplebottomnav.fragment.DetailPicFragment"
         android:label="fragment_detail_pic"
-        tools:layout="@layout/detail_pic" />
+        tools:layout="@layout/detail_pic">
+        <action
+            android:id="@+id/action_detailPicFragment2_to_accountFragment"
+            app:destination="@id/accountFragment" />
+    </fragment>
     <fragment
         android:id="@+id/searchUserFragment"
         android:name="com.example.simplebottomnav.fragment.search_viewpager.SearchUserFragment"

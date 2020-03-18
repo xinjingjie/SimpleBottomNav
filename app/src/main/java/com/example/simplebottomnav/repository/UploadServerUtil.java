@@ -22,6 +22,7 @@ public class UploadServerUtil {
      * @throws IOException
      */
     public static String upLoadFilePost(String actionUrl, Map<String, String> params, File file) throws IOException {
+        Log.d("upLoadFilePost", "upLoadFilePost: did");
         String BOUNDARY = java.util.UUID.randomUUID().toString();
         String PREFIX = "--", LINEND = "\r\n";
         String MULTIPART_FROM_DATA = "multipart/form-data";

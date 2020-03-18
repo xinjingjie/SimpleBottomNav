@@ -55,8 +55,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
     implementation 'com.google.android.gms:play-services-ads:19.0.0'
     implementation 'com.github.clans:fab:1.6.4'
-    def camerax_version = '1.0.0-alpha06'
-    implementation "androidx.camera:camera-core:${camerax_version}"
-    implementation "androidx.camera:camera-camera2:${camerax_version}"
     implementation 'androidx.test.espresso:espresso-accessibility:3.3.0-alpha04'
+    /* 标签选择*/
+    implementation 'me.gujun.android.taggroup:library:1.4@aar'
 }

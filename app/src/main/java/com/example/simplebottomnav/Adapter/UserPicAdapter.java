@@ -1,6 +1,8 @@
 package com.example.simplebottomnav.Adapter;
 
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +10,8 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -79,6 +83,19 @@ public class UserPicAdapter extends ListAdapter<Picture, UserPicAdapter.UserPicV
                     }
                 })
                 .into(holder.imageView);
+
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                Picture picture = new Picture();
+                Log.d("TAG", "onClick: " + getItem(position).getLocation());
+                picture.setLocation(getItem(position).getLocation());
+                bundle.putParcelable("Detail_Pic", picture);
+                NavController navController = Navigation.findNavController(v);
+                navController.navigate(R.id.action_accountFragment_to_detailPicFragment2, bundle);
+            }
+        });
     }
 
     static class UserPicViewHolder extends RecyclerView.ViewHolder {

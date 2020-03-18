@@ -4,7 +4,7 @@ package com.example.simplebottomnav.fragment;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ContentValues;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,6 +32,7 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.example.simplebottomnav.MainActivity;
 import com.example.simplebottomnav.R;
 import com.example.simplebottomnav.bean.Picture;
 import com.github.chrisbanes.photoview.PhotoView;
@@ -38,7 +40,6 @@ import com.github.chrisbanes.photoview.PhotoView;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
 
@@ -53,6 +54,7 @@ public class DetailPicFragment extends Fragment {
     PhotoView photoView;
     Picture picture;
     RequestBuilder requestBuilder;
+    Button button;
     private final int REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     public DetailPicFragment() {
         // Required empty public constructor
@@ -73,7 +75,7 @@ public class DetailPicFragment extends Fragment {
 
         photoView = view.findViewById(R.id.Detail_Pic);
         shimmerLayout = view.findViewById(R.id.Shimmer_detail_pic);
-
+        button = view.findViewById(R.id.change_button);
         return view;
     }
 
@@ -83,10 +85,27 @@ public class DetailPicFragment extends Fragment {
         shimmerLayout.setShimmerColor(0x55FFFFFF);
         shimmerLayout.setShimmerAngle(0);
         shimmerLayout.startShimmerAnimation();
-
+        button.setVisibility(View.GONE);
 
         if ( getArguments() != null ) {
             picture = getArguments().<Picture>getParcelable("Detail_Pic");
+            if (getArguments().getBoolean("isProfile")) {
+                button.setVisibility(View.VISIBLE);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+//                        SharedPreferences preference = Objects.requireNonNull(getActivity()).getSharedPreferences("login_info",
+//                                MODE_PRIVATE);
+//                        int uid=preference.getInt("UID",0);
+//                        String url="http://192.168.2.107:8080/api/user/updateProfilePic";
+//                        new PostPicFragment.PostPicTask()
+                        MainActivity mainActivity = (MainActivity) requireActivity();
+                        mainActivity.setType("PROFILE");
+                        mainActivity.selectFromGalley();
+                    }
+                });
+
+            }
         } else {
             Log.d("DetailPicFragment", "getArguments IS NULL");
         }
@@ -112,24 +131,28 @@ public class DetailPicFragment extends Fragment {
                 });
         requestBuilder.into(photoView);
         final String[] items = new String[]{"保存图片"};
+        photoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requireActivity().onBackPressed();
+            }
+        });
+
         photoView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setItems(items, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case 0:
-                                if ( Build.VERSION.SDK_INT < 29 && ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ) {
-                                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE);
-                                } else {
-                                    savePhoto();
-                                }
-                                break;
-                            default:
+                builder.setItems(items, (dialog, which) -> {
+                    switch (which) {
+                        case 0:
+                            if (Build.VERSION.SDK_INT < 29 && ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE);
+                            } else {
+                                savePhoto();
+                            }
+                            break;
+                        default:
 
-                        }
                     }
                 }).show();
                 return true;
@@ -154,41 +177,39 @@ public class DetailPicFragment extends Fragment {
         }
     }
 
-    public void savePhoto() {
+    private void savePhoto() {
         try {
-            if ( new SavePic().execute().get() ) {
+            if (new SavePic().execute(picture.getLocation(), requireContext()).get()) {
                 Toast.makeText(requireContext(), "保存成功！", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(requireContext(), "保存失败！", Toast.LENGTH_SHORT).show();
             }
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
 
     }
 
-    class SavePic extends AsyncTask<Void, Void, Boolean> {
+    class SavePic extends AsyncTask<Object, Void, Boolean> {
 
         @Override
-        protected Boolean doInBackground(Void... voids) {
+        protected Boolean doInBackground(Object... objects) {
             try {
-                Log.d("TAG", "savePhoto: " + picture.getLocation());
-                URL url = new URL(picture.getLocation());
+                String location = objects[0].toString();
+                Context context = (Context) objects[1];
+                Log.d("TAG", "savePhoto: " + location);
+                URL url = new URL(location);
                 InputStream inputStream = url.openStream();
                 Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
 
-                Uri saveUri = requireContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                Uri saveUri = context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                         new ContentValues());
-                OutputStream outputStream = requireContext().getContentResolver().openOutputStream(saveUri);
+                OutputStream outputStream = context.getContentResolver().openOutputStream(saveUri);
                 Boolean saveResult = bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream);
                 inputStream.close();
                 outputStream.flush();
                 outputStream.close();
                 return saveResult;
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }

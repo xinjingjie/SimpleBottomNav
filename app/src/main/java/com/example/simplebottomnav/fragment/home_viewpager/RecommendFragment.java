@@ -30,7 +30,7 @@ public class RecommendFragment extends Fragment {
     private PicViewModel mViewModel;
     private RecyclerView recyclerView;
     private PicAdapter picAdapter1;
-    private PicAdapter picAdapter2;
+    // private PicAdapter picAdapter2;
     private SwipeRefreshLayout swipeRefreshLayout;
     private FloatingActionMenu addButton;
 
@@ -55,7 +55,7 @@ public class RecommendFragment extends Fragment {
         addButton = requireActivity().findViewById(R.id.addButton);
         recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 1));
         picAdapter1 = new PicAdapter(mViewModel, PicAdapter.NORMAL_VIEW);
-        picAdapter2 = new PicAdapter(mViewModel, PicAdapter.CARD_VIEW);
+        // picAdapter2 = new PicAdapter(mViewModel, PicAdapter.CARD_VIEW);
         Log.d("what", "onActivityCreated: ");
         recyclerView.setAdapter(picAdapter1);
         mViewModel.getPhotoListLive().observe(getViewLifecycleOwner(), new Observer<List<Picture>>() {
@@ -64,11 +64,12 @@ public class RecommendFragment extends Fragment {
                 Log.d("did", "onChanged: " + pictures.size());
                 if (mViewModel.getIsToScrollTop()) {
                     Log.d("did", "scrollToTop");
-                    recyclerView.smoothScrollToPosition(0);
+                    RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
+                    manager.scrollToPosition(0);
 
                     mViewModel.setToScrollTop(false);
                 }
-                picAdapter2.submitList(pictures);
+                //  picAdapter2.submitList(pictures);
                 picAdapter1.submitList(pictures);
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
@@ -80,8 +81,8 @@ public class RecommendFragment extends Fragment {
             public void onChanged(Integer integer) {
                 Log.d("TAG", "onChanged:--- " + integer);
                 picAdapter1.setFooter_state(integer);
-                picAdapter2.setFooter_state(integer);
-                picAdapter2.notifyItemChanged(picAdapter2.getItemCount() - 1);
+                //   picAdapter2.setFooter_state(integer);
+                //   picAdapter2.notifyItemChanged(picAdapter2.getItemCount() - 1);
                 picAdapter1.notifyItemChanged(picAdapter1.getItemCount() - 1);
                 if (integer == LoadPic.NETWORK_ERROR) {
                     if (swipeRefreshLayout.isRefreshing()) {
@@ -97,7 +98,8 @@ public class RecommendFragment extends Fragment {
             @Override
             public void onRefresh() {
                 Log.d("did", "onRefresh: scrollToTop");
-                recyclerView.smoothScrollToPosition(0);
+                RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
+                manager.scrollToPosition(0);
                 mViewModel.resetData();
                 mViewModel.setPhotoListLive(LoadPic.FIND_TYPE_RECOMMEND, GetPicKey.getFreshKey());
 

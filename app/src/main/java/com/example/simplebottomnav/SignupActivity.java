@@ -219,7 +219,7 @@ public class SignupActivity extends AppCompatActivity {
             String phone = objects[2].toString();
             String pwd = objects[3].toString();
             //Gson dateGson=new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create(); dateGson.toJson(new Date())
-            User user = new User(name, "null", pwd, 0, null, phone, email, 0, null);
+            User user = new User(name, "null", pwd, 0, null, phone, email, 0, null, null);
             Gson gson = new Gson();
             String jsonData = gson.toJson(user);
             Log.d(TAG, "doInBackground: " + jsonData);

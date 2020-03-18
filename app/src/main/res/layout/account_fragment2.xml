@@ -1,25 +1,186 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.appbar.CollapsingToolbarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <data>
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/imageView6"
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
-            app:srcCompat="@drawable/geranium" />
+            android:background="#FFFFFF">
 
-        <TextView
-            android:id="@+id/textView3"
+            <!--            <ImageView-->
+            <!--                android:id="@+id/imageView"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="100dp"-->
+            <!--                android:maxHeight="300dp"-->
+            <!--                android:minHeight="100dp"-->
+            <!--                android:scaleType="centerCrop"-->
+            <!--                app:layout_scrollFlags="snapMargins|scroll"-->
+            <!--                app:srcCompat="@drawable/donut" />-->
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar6"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:background="@drawable/geranium"
+                android:maxHeight="300dp"
+                android:minHeight="50dp"
+                android:scaleType="centerCrop"
+                android:theme="?attr/actionBarTheme"
+                app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
+                app:menu="@menu/account_menu">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/linearLayoutCompat"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintBottom_toBottomOf="@+id/profile_picture"
+                    app:layout_constraintTop_toBottomOf="@+id/profile_picture">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/profile_picture"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_marginStart="16dp"
+                        android:clickable="true"
+                        android:src="@drawable/logo"
+                        app:layout_constraintBottom_toTopOf="@+id/guideline37"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/guideline37" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline37"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_percent="0.55" />
+
+                    <TextView
+                        android:id="@+id/username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="心境界"
+                        android:textColor="@color/accent"
+                        app:layout_constraintBottom_toTopOf="@+id/guideline38"
+                        app:layout_constraintEnd_toEndOf="@+id/profile_picture"
+                        app:layout_constraintStart_toStartOf="@+id/profile_picture"
+                        app:layout_constraintTop_toTopOf="@+id/guideline38" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline38"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_percent="0.81" />
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="图片"
+                        android:textColor="@color/accent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/profile_picture"
+                        app:layout_constraintTop_toBottomOf="@+id/username" />
+
+                    <TextView
+                        android:id="@+id/pic_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:textColor="@color/accent"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView3"
+                        app:layout_constraintStart_toEndOf="@+id/textView3"
+                        app:layout_constraintTop_toTopOf="@+id/textView3"
+                        tools:text="999" />
+
+                    <TextView
+                        android:id="@+id/textView5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="关注"
+                        android:textColor="@color/accent"
+                        app:layout_constraintBottom_toBottomOf="@+id/pic_number"
+                        app:layout_constraintStart_toEndOf="@+id/pic_number"
+                        app:layout_constraintTop_toTopOf="@+id/pic_number" />
+
+                    <TextView
+                        android:id="@+id/sub_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:textColor="@color/accent"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView5"
+                        app:layout_constraintStart_toEndOf="@+id/textView5"
+                        app:layout_constraintTop_toTopOf="@+id/textView5"
+                        tools:text="999" />
+
+                    <TextView
+                        android:id="@+id/textView7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="粉丝"
+                        android:textColor="@color/accent"
+                        app:layout_constraintBottom_toBottomOf="@+id/sub_number"
+                        app:layout_constraintStart_toEndOf="@+id/sub_number"
+                        app:layout_constraintTop_toTopOf="@+id/sub_number" />
+
+                    <TextView
+                        android:id="@+id/fans_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:textColor="@color/accent"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView7"
+                        app:layout_constraintStart_toEndOf="@+id/textView7"
+                        app:layout_constraintTop_toTopOf="@+id/textView7"
+                        tools:text="999" />
+
+                    <TextView
+                        android:id="@+id/edit_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="#66000000"
+                        android:text="修改背景"
+                        android:textColor="@color/accent"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/fans_number"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/fans_number" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.appcompat.widget.Toolbar>
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#66ffffff"
+                android:text="修改个人信息" />
+
+            <View
+                android:id="@+id/divider3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/user_pics"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TextViewTextViewTextViewTextViewTextViewTextView" />
-    </com.google.android.material.appbar.AppBarLayout>
-</com.google.android.material.appbar.CollapsingToolbarLayout>
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

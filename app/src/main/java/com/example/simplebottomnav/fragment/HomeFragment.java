@@ -35,7 +35,7 @@ public class HomeFragment extends Fragment {
     private FloatingActionButton gallery;
     private ViewPager2 viewPager2;
     private TabLayout tabLayout;
-
+    private final int REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     // 申请相机权限的requestCode
     private static final int PERMISSION_CAMERA_REQUEST_CODE = 0x00000012;
     //用于保存拍照图片的uri
@@ -102,8 +102,13 @@ public class HomeFragment extends Fragment {
         gallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity mainActivity = (MainActivity) getActivity();
-                mainActivity.selectFromGalley();
+                if (Build.VERSION.SDK_INT < 29 && ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE);
+                } else {
+                    MainActivity mainActivity = (MainActivity) getActivity();
+                    mainActivity.selectFromGalley();
+                }
+
             }
         });
 
@@ -132,7 +137,6 @@ public class HomeFragment extends Fragment {
         }
     }
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == PERMISSION_CAMERA_REQUEST_CODE) {
@@ -144,6 +148,13 @@ public class HomeFragment extends Fragment {
             } else {
                 //拒绝权限，弹出提示框。
                 Toast.makeText(requireActivity(), "拍照权限被拒绝", Toast.LENGTH_LONG).show();
+            }
+        } else if (requestCode == REQUEST_WRITE_EXTERNAL_STORAGE) {
+            if (grantResults != null && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                MainActivity mainActivity = (MainActivity) getActivity();
+                mainActivity.selectFromGalley();
+            } else {
+                Toast.makeText(requireContext(), "保存失败！请给予权限", Toast.LENGTH_SHORT).show();
             }
         }
     }

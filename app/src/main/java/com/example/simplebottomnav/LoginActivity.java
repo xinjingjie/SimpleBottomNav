@@ -142,6 +142,8 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putInt("UID", loginUser.getUid());
                     editor.putInt("fans_number", loginUser.getFans_number());
                     editor.putInt("sub_number", loginUser.getSub_number());
+                    editor.putString("profile_picture", loginUser.getProfile_picture());
+                    editor.putString("background_image", loginUser.getBackground_image());
                     editor.apply();
 
                     onLoginSuccess();

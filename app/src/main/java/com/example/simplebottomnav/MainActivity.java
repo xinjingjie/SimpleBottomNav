@@ -37,23 +37,28 @@ public class MainActivity extends AppCompatActivity {
     //用于保存拍照图片的uri
     private Uri mCameraUri;
     // 是否是Android 10以上手机
-
+    private String type = "POST";
     // 用于保存图片的文件路径，Android 10以下使用图片路径访问图片
     private String mCameraImagePath;
     private boolean isAndroidQ = Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 //        setTitle("");
-        BottomNavigationView bottomNavigationView=findViewById(R.id.bottomNavigationView);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         navController = Navigation.findNavController(this, R.id.fragment);
-        NavigationUI.setupWithNavController(bottomNavigationView,navController);
+        NavigationUI.setupWithNavController(bottomNavigationView, navController);
     }
 
     @Override
     public boolean onSupportNavigateUp() {
         return navController.navigateUp();
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     @Override
@@ -215,7 +220,19 @@ public class MainActivity extends AppCompatActivity {
             Bundle bundle = new Bundle();
             bundle.putString("IMAGEURL", imagePath);
             NavController navController = Navigation.findNavController(this, R.id.fragment);
-            navController.navigate(R.id.action_homeFragment_to_postPicFragment, bundle);
+
+            if ("PROFILE".equals(type)) {
+                Log.d("TAG", "displayImage: " + imagePath);
+                //AccountFragment.newInstance(bundle);
+                bundle.putBoolean("isBackGround", false);
+                navController.navigate(R.id.action_detailPicFragment2_to_accountFragment, bundle);
+
+            } else if ("POST".equals(type)) {
+                navController.navigate(R.id.action_homeFragment_to_postPicFragment, bundle);
+            } else if ("BACKGROUND".equals(type)) {
+                bundle.putBoolean("isBackGround", false);
+                navController.navigate(R.id.action_detailPicFragment2_to_accountFragment, bundle);
+            }
 
         } else {
             Toast.makeText(this, "failed to get image", Toast.LENGTH_SHORT).show();

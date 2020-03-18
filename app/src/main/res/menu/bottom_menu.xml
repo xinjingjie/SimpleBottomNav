@@ -15,6 +15,6 @@
         android:title="通知" />
     <item
         android:id="@+id/accountFragment"
-        android:icon="@drawable/ic_account_circle_white_24dp"
+        android:icon="@drawable/ic_account_circle_black_24dp"
         android:title="个人" />
 </menu>

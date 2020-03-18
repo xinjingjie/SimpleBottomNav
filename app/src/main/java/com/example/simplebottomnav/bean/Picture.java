@@ -5,7 +5,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.Objects;
-
 public class Picture implements Parcelable {
 
     private int p_id;

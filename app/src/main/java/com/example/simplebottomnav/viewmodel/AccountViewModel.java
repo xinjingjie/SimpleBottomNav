@@ -1,7 +1,6 @@
 package com.example.simplebottomnav.viewmodel;
 
 import android.app.Application;
-import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -18,7 +17,7 @@ import com.google.gson.Gson;
 import java.util.List;
 
 public class AccountViewModel extends AndroidViewModel {
-    VolleySingleton volleySingleton;
+    private VolleySingleton volleySingleton;
     private MutableLiveData<List<Picture>> searchPhotoLiveData = new MutableLiveData<List<Picture>>();
 
     public AccountViewModel(@NonNull Application application) {
@@ -30,19 +29,17 @@ public class AccountViewModel extends AndroidViewModel {
     public LiveData<List<Picture>> getSearchPhotoLiveData() {
         return searchPhotoLiveData;
     }
-
     public void setPhotoListLive(String key) {
-        final Handler handler = new Handler();
-        Runnable runnable = new Runnable() {
-
-            @Override
-            public void run() {
-                fetchData(key);
-            }
-        };
-        handler.postDelayed(runnable, 5000);
-
-
+//        final Handler handler = new Handler();
+//        Runnable runnable = new Runnable() {
+//
+//            @Override
+//            public void run() {
+//                fetchData(key);
+//            }
+//        };
+//        handler.postDelayed(runnable, 5000);
+        fetchData(key);
     }
 
     public void fetchData(String key) {
@@ -63,7 +60,7 @@ public class AccountViewModel extends AndroidViewModel {
 
     private String getUrl(String key) {
         Log.d("did", "getUrl: " + key);
-        return "http://192.168.2.107:8080/api/pic/getALl?uid=" + key;
+        return "http://192.168.2.107:8080/api/pic/getAll?uid=" + key;
     }
     // TODO: Implement the ViewModel
 }

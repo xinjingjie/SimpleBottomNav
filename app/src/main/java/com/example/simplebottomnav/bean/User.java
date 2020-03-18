@@ -13,10 +13,11 @@ public class User {
     private int fans_number;
     private int sub_number;
     private String profile_picture;
+    private String background_image;
     public User() {
     }
 
-    public User(String username, String gender, String password, int age, String create_time, String telephone, String email, int pic_number, String profile_picture) {
+    public User(String username, String gender, String password, int age, String create_time, String telephone, String email, int pic_number, String profile_picture, String background_image) {
         this.username = username;
         this.gender = gender;
         this.password = password;
@@ -26,9 +27,10 @@ public class User {
         this.email = email;
         this.pic_number = pic_number;
         this.profile_picture = profile_picture;
+        this.background_image = background_image;
     }
 
-    public User(String username, String gender, String password, int age, String create_time, String telephone, String email, int pic_number, int fans_number, int sub_number, String profile_picture) {
+    public User(String username, String gender, String password, int age, String create_time, String telephone, String email, int pic_number, int fans_number, int sub_number, String profile_picture, String background_image) {
         this.username = username;
         this.gender = gender;
         this.password = password;
@@ -40,6 +42,7 @@ public class User {
         this.fans_number = fans_number;
         this.sub_number = sub_number;
         this.profile_picture = profile_picture;
+        this.background_image = background_image;
     }
 
     public String getProfile_picture() {
@@ -48,6 +51,14 @@ public class User {
 
     public void setProfile_picture(String profile_picture) {
         this.profile_picture = profile_picture;
+    }
+
+    public String getBackground_image() {
+        return background_image;
+    }
+
+    public void setBackground_image(String background_image) {
+        this.background_image = background_image;
     }
 
     public int getUid() {

@@ -105,6 +105,7 @@ public class PicAdapter extends ListAdapter<Picture, RecyclerView.ViewHolder> {
                 public void onClick(View v) {
                     Log.d("TAG", "onClick: ");
                     Bundle bundle = new Bundle();
+                    bundle.putBoolean("isProfile", false);
                     bundle.putParcelable("Detail_Pic", getItem(picHolder.getAdapterPosition()));
                     NavController navController = Navigation.findNavController(view);
                     navController.navigate(R.id.action_homeFragment_to_detailPicFragment2, bundle);
@@ -204,7 +205,7 @@ public class PicAdapter extends ListAdapter<Picture, RecyclerView.ViewHolder> {
                     return false;
                 }
             }).into(holder.userButton);
-            holder.likeButton.setImageResource(R.drawable.ic_favorite_border_gray_24dp);
+//            holder.likeButton.setImageResource(R.drawable.ic_favorite_border_gray_24dp);
             holder.likeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

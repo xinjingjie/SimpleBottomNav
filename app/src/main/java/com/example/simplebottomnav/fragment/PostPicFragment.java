@@ -30,18 +30,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import me.gujun.android.taggroup.TagGroup;
+
 import static android.content.Context.MODE_PRIVATE;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class PostPicFragment extends Fragment {
-    private ImageView imageView;
+    private ImageView post_pic;
     private boolean isAndroidQ = Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q;
-
     private Button submit_button;
-    private EditText contents, tags;
-
+    private EditText pic_contents, pic_tags;
+    private TagGroup tagGroup;
+    private String url = "http://192.168.2.107:8080/api/pic/uploadFile";
     public PostPicFragment() {
         // Required empty public constructor
     }
@@ -52,26 +54,35 @@ public class PostPicFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.post_pic, container, false);
-        imageView = view.findViewById(R.id.post_pic);
-        contents = view.findViewById(R.id.pic_contents);
+
+        pic_contents = view.findViewById(R.id.pic_contents);
+        pic_tags = view.findViewById(R.id.pic_tags);
+        post_pic = view.findViewById(R.id.post_pic);
+        tagGroup = view.findViewById(R.id.TagGroup);
         submit_button = view.findViewById(R.id.submit_button);
-        tags = view.findViewById(R.id.pic_tags);
         return view;
-
-
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        tagGroup.setTags(new String[]{"美景", "美食", "自然", "动物", "自在", "灵动"
+                , "暖", "活力"});
+        tagGroup.setOnTagClickListener(new TagGroup.OnTagClickListener() {
+            @Override
+            public void onTagClick(String tag) {
+                pic_tags.append("#" + tag);
+            }
+        });
         assert getArguments() != null;
         String x = getArguments().getString("IMAGEURL");
-        super.onActivityCreated(savedInstanceState);
         if (isAndroidQ) {
-            imageView.setImageURI(Uri.parse(x));
+            post_pic.setImageURI(Uri.parse(x));
         } else {
             assert getArguments() != null;
             Log.d("TAG", "onActivityCreated: " + x);
-            imageView.setImageBitmap(BitmapFactory.decodeFile(x));
+            post_pic.setImageBitmap(BitmapFactory.decodeFile(x));
         }
         SharedPreferences preference = getActivity().getSharedPreferences("login_info",
                 MODE_PRIVATE);
@@ -84,13 +95,13 @@ public class PostPicFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                String pic_contents = contents.getText().toString();
-                String pic_tags = tags.getText().toString();
+                String picContents = pic_contents.getText().toString();
+                String picTags = pic_tags.getText().toString();
 
                 try {
                     if (isAndroidQ) {
                         submit_button.setEnabled(false);
-                        String result = (String) new PostPicTask().execute(getRealPathFromUri(requireContext(), Uri.parse(x)), uid, pic_contents, pic_tags).get();
+                        String result = (String) new PostPicTask().execute(getRealPathFromUri(requireContext(), Uri.parse(x)), uid, picContents, picTags, url).get();
                         Log.d("TAG", "onClick: " + result);
                         if (!("false".equals(result))) {
                             Toast.makeText(requireActivity(), "发布成功", Toast.LENGTH_SHORT).show();
@@ -100,7 +111,7 @@ public class PostPicFragment extends Fragment {
                         }
                     } else {
                         submit_button.setEnabled(false);
-                        String result = (String) new PostPicTask().execute(x, uid, pic_contents, pic_tags).get();
+                        String result = (String) new PostPicTask().execute(x, uid, picContents, picTags, url).get();
                         Log.d("TAG", "onClick: " + result);
                         if (!("false".equals(result))) {
                             Toast.makeText(requireActivity(), "发布成功", Toast.LENGTH_SHORT).show();
@@ -140,13 +151,14 @@ public class PostPicFragment extends Fragment {
             String uid = objects[1].toString();
             String contents = objects[2].toString();
             String tags = objects[3].toString();
+            String url = objects[4].toString();
             Map<String, String> map = new HashMap<String, String>();
             Log.d("TAG", "doInBackground: " + path);
             map.put("uid", uid);
             map.put("contents", contents);
             map.put("tags", tags);
             try {
-                return (UploadServerUtil.upLoadFilePost("http://192.168.2.107:8080/api/pic/uploadFile", map, new File(path)));
+                return (UploadServerUtil.upLoadFilePost(url, map, new File(path)));
             } catch (IOException e) {
                 e.printStackTrace();
             }
