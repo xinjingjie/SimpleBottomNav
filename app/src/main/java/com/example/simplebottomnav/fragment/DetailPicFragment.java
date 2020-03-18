@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -161,25 +160,11 @@ public class DetailPicFragment extends Fragment {
 
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case REQUEST_WRITE_EXTERNAL_STORAGE:
-                if ( grantResults != null && grantResults[0] == PackageManager.PERMISSION_GRANTED ) {
-                    savePhoto();
-                } else {
-                    Toast.makeText(requireContext(), "保存失败！请给予权限", Toast.LENGTH_SHORT).show();
-                }
-                break;
-            default:
-                break;
-        }
-    }
+
 
     private void savePhoto() {
         try {
-            if (new SavePic().execute(picture.getLocation(), requireContext()).get()) {
+            if (!"false".equals(new SavePic().execute(picture.getLocation(), requireContext()).get())) {
                 Toast.makeText(requireContext(), "保存成功！", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(requireContext(), "保存失败！", Toast.LENGTH_SHORT).show();
@@ -190,10 +175,10 @@ public class DetailPicFragment extends Fragment {
 
     }
 
-    class SavePic extends AsyncTask<Object, Void, Boolean> {
+    public static class SavePic extends AsyncTask<Object, Void, String> {
 
         @Override
-        protected Boolean doInBackground(Object... objects) {
+        protected String doInBackground(Object... objects) {
             try {
                 String location = objects[0].toString();
                 Context context = (Context) objects[1];
@@ -204,12 +189,16 @@ public class DetailPicFragment extends Fragment {
 
                 Uri saveUri = context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                         new ContentValues());
+                Log.d("TAG", "doInBackground: " + saveUri);
                 OutputStream outputStream = context.getContentResolver().openOutputStream(saveUri);
                 Boolean saveResult = bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream);
                 inputStream.close();
                 outputStream.flush();
                 outputStream.close();
-                return saveResult;
+                if (saveResult) {
+                    return saveUri.toString();
+                } else
+                    return "false";
             } catch (IOException e) {
                 e.printStackTrace();
             }

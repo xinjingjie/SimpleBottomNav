@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -56,6 +57,8 @@ public class AccountFragment extends Fragment {
     private UserPicAdapter picAdapter;
     private String url2 = "http://192.168.2.107:8080/api/user/updateBackGround";
     private String url1 = "http://192.168.2.107:8080/api/user/updateProfilePic";
+    LiveData<List<Picture>> allUserPics;
+    //List<Picture> allUserPics;
 
     //    boolean isFlesh = true;
     NavController navController;
@@ -68,7 +71,20 @@ public class AccountFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+//        SharedPreferences preference = getContext().getSharedPreferences("login_info",
+//                MODE_PRIVATE);
+//        boolean isLogin=preference.getBoolean("isLogin",false);
+//        if (!isLogin){
+//            Intent intent=new Intent(requireActivity(),LoginActivity.class);
+//            startActivity(intent);
+//            requireActivity().finish();
+//        }
         super.onViewCreated(view, savedInstanceState);
+//
+//        boolean isNeedDownLoad=preference.getBoolean("isNeedDownLoad",true);
+//        FetchUserPics fetchUserPics=new FetchUserPics(requireActivity().getApplication());
+//        if (isNeedDownLoad){
+//            fetchUserPics.setAllUserPics();}
         Log.d("pic", "onViewCreated: --------------------------");
     }
 
@@ -104,15 +120,23 @@ public class AccountFragment extends Fragment {
 
             }
         });
-
+/*
+加载头像
+ */
         String profile_picture_url = preference.getString("profile_picture", null);
-        if (profile_picture_url != null) {
+//        if (profile_picture_url != null) {
+//            Glide.with(this)
+//                    .load(profile_picture_url)
+//                    .placeholder(R.drawable.logo)
+//                    .into(binding.profilePicture);
+//        }
+        Picture profilePic = mViewModel.getProfilePic();
+        if (profilePic != null) {
             Glide.with(this)
-                    .load(profile_picture_url)
+                    .load(profilePic.getLocation())
                     .placeholder(R.drawable.logo)
                     .into(binding.profilePicture);
         }
-
 
         String profile_background_url = preference.getString("background_image", null);
         if (profile_background_url != null) {
@@ -213,15 +237,17 @@ public class AccountFragment extends Fragment {
             }
 
         });
-
+        allUserPics = mViewModel.getAllUserPic();
 
         int uid = preference.getInt("UID", 0);
         binding.userPics.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-        mViewModel.setPhotoListLive(String.valueOf(uid));
+
+
+        // mViewModel.setPhotoListLive(String.valueOf(uid));
         picAdapter = new UserPicAdapter();
         binding.userPics.setAdapter(picAdapter);
-
-        mViewModel.getSearchPhotoLiveData().observe(getViewLifecycleOwner(), new Observer<List<Picture>>() {
+        //mViewModel.getSearchPhotoLiveData()
+        allUserPics.observe(getViewLifecycleOwner(), new Observer<List<Picture>>() {
             @Override
             public void onChanged(List<Picture> pictures) {
                 Log.d("pic", "onChanged: " + pictures.size());

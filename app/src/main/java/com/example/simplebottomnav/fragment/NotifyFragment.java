@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,7 +14,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
+import com.example.simplebottomnav.AppDatabase;
 import com.example.simplebottomnav.R;
+import com.example.simplebottomnav.dao.PicDao;
 import com.example.simplebottomnav.viewmodel.ExploreViewModel;
 
 public class NotifyFragment extends Fragment {
@@ -20,9 +25,12 @@ public class NotifyFragment extends Fragment {
     private ExploreViewModel mViewModel;
     private SwipeRefreshLayout swipeRefreshLayout;
     ImageView imageView;
-    String url1 = "https://cdn.pixabay.com/photo/2018/03/19/13/43/feedback-3240007_1280.jpg";
+    TextView testwords;
+    Button addButton, deleteButton;
+    // PictureRepository pictureRepository;
     private static final String TAG = "FavoriteFragment";
-
+    AppDatabase appDatabase;
+    PicDao picDao;
     public static NotifyFragment newInstance() {
         return new NotifyFragment();
     }
@@ -31,8 +39,15 @@ public class NotifyFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.notify_fragment, container, false);
-        imageView = view.findViewById(R.id.imageView);
+        imageView = view.findViewById(R.id.imageView6);
         swipeRefreshLayout = view.findViewById(R.id.swipeFav);
+        testwords = view.findViewById(R.id.testwords);
+        addButton = view.findViewById(R.id.addButton);
+        deleteButton = view.findViewById(R.id.deleteButton);
+//        appDatabase = Room.databaseBuilder(requireContext(), AppDatabase.class, "database")
+//               .allowMainThreadQueries()
+//                .build();
+//        picDao = appDatabase.getPicDao();
         return view;
     }
 
@@ -41,36 +56,39 @@ public class NotifyFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(ExploreViewModel.class);
         // TODO: Use the ViewModel
-//
-//        getFavPic();
-//        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        //  pictureRepository=new PictureRepository(requireContext());
+        Glide.with(requireView()).load("content://media/external/images/media/18").into(imageView);
+
+//        addButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
-//            public void onRefresh() {
-//                getFavPic();
+//            public void onClick(View v) {
+//                Picture picture=new Picture(6,"心境界","2018-2-22 2:12:09","htadas",0,0,null,null,null);
+//                picDao.insertPics(picture);
+//                updateView();
 //            }
 //        });
-    }
 //
-//    private void getFavPic() {
-//        Glide.with(this)
-//                .load(url1)
-//                .placeholder(R.drawable.ic_launcher_background)
-//                .listener(new RequestListener<Drawable>() {
-//                    @Override
-//                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-//                        if ( swipeRefreshLayout.isRefreshing() ) {
-//                            swipeRefreshLayout.setRefreshing(false);
-//                        }
-//                        return false;
-//                    }
-//
-//                    @Override
-//                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-//                        if ( swipeRefreshLayout.isRefreshing() ) {
-//                            swipeRefreshLayout.setRefreshing(false);
-//                        }
-//                        return false;
-//                    }
-//                }).into(imageView);
+//        deleteButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                picDao.deleteAll();
+//                updateView();
+//            }
+//        });
 //    }
+//    public void updateView() {
+//
+//
+//        List<Picture> pictures = picDao.findALL();
+//        if (pictures==null){
+//            Log.d(TAG, "updateView: "+null);
+//        }
+//        String x="";
+//        for (int i = 0; i < pictures.size(); i++) {
+//            Picture picture=pictures.get(i);
+//            x+=picture.toString();
+//        }
+//        testwords.setText(x);
+//    }
+    }
 }

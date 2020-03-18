@@ -4,22 +4,40 @@ package com.example.simplebottomnav.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Objects;
-public class Picture implements Parcelable {
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
+import java.util.Objects;
+
+@Entity
+public class Picture implements Parcelable {
+    @PrimaryKey(autoGenerate = true)
     private int p_id;
+    @ColumnInfo
     private int user_id;
+    @ColumnInfo
     private String username;
+    @ColumnInfo
     private String update_time;
+    @ColumnInfo
     private String location;
+    @ColumnInfo
     private int likes;
+    @ColumnInfo
     private int comments;
+    @ColumnInfo
     private String content;
+    @ColumnInfo
     private String tags;
+    @ColumnInfo
     private String profile_picture;
 
+    @Ignore
     public Picture() {
     }
+
 
     public Picture(int user_id, String username, String update_time, String location, int likes, int comments, String content, String tags, String profile_picture) {
         this.user_id = user_id;
@@ -109,10 +127,6 @@ public class Picture implements Parcelable {
         this.user_id = user_id;
     }
 
-    public void setUpdateTime(String update_time) {
-        this.update_time = update_time;
-    }
-
     public void setLocation(String location) {
         this.location = location;
     }
@@ -123,10 +137,6 @@ public class Picture implements Parcelable {
 
     public int getUser_id() {
         return user_id;
-    }
-
-    public String getUpdateTime() {
-        return update_time;
     }
 
     public String getLocation() {
@@ -170,12 +180,14 @@ public class Picture implements Parcelable {
         return "Picture{" +
                 "p_id=" + p_id +
                 ", user_id=" + user_id +
-                ", updateTime=" + update_time +
+                ", username='" + username + '\'' +
+                ", update_time='" + update_time + '\'' +
                 ", location='" + location + '\'' +
                 ", likes=" + likes +
                 ", comments=" + comments +
                 ", content='" + content + '\'' +
                 ", tags='" + tags + '\'' +
+                ", profile_picture='" + profile_picture + '\'' +
                 '}';
     }
 

@@ -8,18 +8,48 @@
     android:orientation="vertical"
     tools:context=".fragment.SearchFragment">
 
+    <!--    <com.mancj.materialsearchbar.MaterialSearchBar-->
+    <!--        android:id="@+id/searchBar"-->
+    <!--        style="@style/MaterialSearchBarLight"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="8dp"-->
+    <!--        android:layout_marginEnd="8dp"-->
+    <!--        android:visibility="visible"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintHorizontal_bias="0.0"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent"-->
+    <!--        app:layout_constraintVertical_bias="0.005"-->
+    <!--        app:mt_backIconTint="#3a3a3a"-->
+    <!--        app:mt_clearIconTint="#3a3a3a"-->
+    <!--        app:mt_dividerColor="#1F000000"-->
+    <!--        app:mt_highlightedTextColor="#8000A1FF"-->
+    <!--        app:mt_hintColor="#42000000"-->
+    <!--        app:mt_menuIconTint="#3A3A3A"-->
+    <!--        app:mt_navIconEnabled="true"-->
+    <!--        app:mt_navIconTint="#3A3A3A"-->
+    <!--        app:mt_placeholder="搜索"-->
+    <!--        app:mt_placeholderColor="#42000000"-->
+    <!--        app:mt_searchBarColor="#FFFFFF"-->
+    <!--        app:mt_searchIconTint="#3A3A3A"-->
+    <!--        app:mt_textColor="#DE000000"-->
+    <!--        app:mt_textCursorTint="#8000A1FF" />-->
     <com.mancj.materialsearchbar.MaterialSearchBar
         android:id="@+id/searchBar"
+        android:layout_margin="8dp"
+        android:layout_marginBottom="788dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:mt_navIconEnabled="false"
         style="@style/MaterialSearchBarLight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.005"
         app:mt_backIconTint="#3a3a3a"
@@ -28,7 +58,6 @@
         app:mt_highlightedTextColor="#8000A1FF"
         app:mt_hintColor="#42000000"
         app:mt_menuIconTint="#3A3A3A"
-        app:mt_navIconEnabled="true"
         app:mt_navIconTint="#3A3A3A"
         app:mt_placeholder="搜索"
         app:mt_placeholderColor="#42000000"
@@ -36,7 +65,6 @@
         app:mt_searchIconTint="#3A3A3A"
         app:mt_textColor="#DE000000"
         app:mt_textCursorTint="#8000A1FF" />
-
     <!--    <com.lapism.search.widget.SearchView-->
     <!--        android:id="@+id/searchView"-->
     <!--        android:layout_width="match_parent"-->

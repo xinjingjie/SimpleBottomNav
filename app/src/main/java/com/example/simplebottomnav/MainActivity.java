@@ -1,9 +1,12 @@
 package com.example.simplebottomnav;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -14,14 +17,18 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.os.EnvironmentCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.simplebottomnav.repository.FetchUserPics;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.File;
@@ -34,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     NavController navController;
     private static final int REQUEST_CODE_PICK_FROM_GALLEY = 0x00000011;
     private static final int PERMISSION_CAMERA_REQUEST_CODE = 0x00000012;
+    private final int REQUEST_WRITE_EXTERNAL_STORAGE = 1;
+
     //用于保存拍照图片的uri
     private Uri mCameraUri;
     // 是否是Android 10以上手机
@@ -42,16 +51,50 @@ public class MainActivity extends AppCompatActivity {
     private String mCameraImagePath;
     private boolean isAndroidQ = Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (Build.VERSION.SDK_INT < 29 && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE);
+        }
         setContentView(R.layout.activity_main);
 //        setTitle("");
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         navController = Navigation.findNavController(this, R.id.fragment);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
+        SharedPreferences preference = this.getApplication().getSharedPreferences("login_info",
+                MODE_PRIVATE);
+        boolean isLogin = preference.getBoolean("isLogin", false);
+        if (!isLogin) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            this.finish();
+        }
+
+        boolean isNeedDownLoad = preference.getBoolean("isNeedDownLoad", true);
+        FetchUserPics fetchUserPics = new FetchUserPics(this.getApplication());
+        if (isNeedDownLoad) {
+            fetchUserPics.setAllUserPics();
+        }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_WRITE_EXTERNAL_STORAGE:
+                if (grantResults != null && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //给予权限后
+                } else {
+                    Toast.makeText(this, "保存失败！请给予权限", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                break;
+        }
+    }
     @Override
     public boolean onSupportNavigateUp() {
         return navController.navigateUp();

@@ -17,12 +17,10 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.example.simplebottomnav.Adapter.SearchPicAdapter;
 import com.example.simplebottomnav.R;
 import com.example.simplebottomnav.bean.Picture;
-import com.example.simplebottomnav.repository.LoadPic;
 
 import java.util.List;
 
 public class SearchPicFragment extends Fragment {
-    private static String search_word;
     private static SearchPicViewModel mViewModel;
     private SearchPicAdapter picAdapter;
     private RecyclerView recyclerView;
@@ -32,11 +30,6 @@ public class SearchPicFragment extends Fragment {
         return new SearchPicFragment();
     }
 
-    public static void setSearch_word(String search_word) {
-        SearchPicFragment.search_word = search_word;
-        Log.d("search", "onActivityCreated: " + search_word);
-        mViewModel.setSearchPhotoLiveData(LoadPic.FIND_TYPE_CONTENT, search_word);
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,

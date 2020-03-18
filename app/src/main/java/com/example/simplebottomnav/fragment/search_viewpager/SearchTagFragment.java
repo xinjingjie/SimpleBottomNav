@@ -8,13 +8,17 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.simplebottomnav.Adapter.SearchPicAdapter;
 import com.example.simplebottomnav.R;
 
 public class SearchTagFragment extends Fragment {
-
-    private SearchTagViewModel mViewModel;
+    private static String search_word;
+    private static SearchPicViewModel mViewModel;
+    private SearchPicAdapter picAdapter;
+    private RecyclerView recyclerView;
 
     public static SearchTagFragment newInstance() {
         return new SearchTagFragment();
@@ -29,8 +33,9 @@ public class SearchTagFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(SearchTagViewModel.class);
-        // TODO: Use the ViewModel
+        mViewModel = new ViewModelProvider(requireActivity(), new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(SearchPicViewModel.class);
+        // recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
+
     }
 
 }

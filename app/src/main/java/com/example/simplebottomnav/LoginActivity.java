@@ -42,7 +42,14 @@ public class LoginActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        preference = this.getApplication().getSharedPreferences("login_info",
+                MODE_PRIVATE);
+        boolean isLogin = preference.getBoolean("isLogin", false);
+        if (isLogin) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            this.finish();
+        }
         setContentView(R.layout.activity_login);
         _phoneText = findViewById(R.id.input_phone);
         _passwordText = findViewById(R.id.input_password);
@@ -144,6 +151,7 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putInt("sub_number", loginUser.getSub_number());
                     editor.putString("profile_picture", loginUser.getProfile_picture());
                     editor.putString("background_image", loginUser.getBackground_image());
+                    editor.putBoolean("isLogin", true);
                     editor.apply();
 
                     onLoginSuccess();

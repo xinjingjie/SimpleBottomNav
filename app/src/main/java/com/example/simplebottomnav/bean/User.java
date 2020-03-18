@@ -1,5 +1,7 @@
 package com.example.simplebottomnav.bean;
 
+import java.util.Objects;
+
 public class User {
     private int uid;
     private String username;
@@ -162,5 +164,30 @@ public class User {
                 ", email='" + email + '\'' +
                 ", pic_number=" + pic_number +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return uid == user.uid &&
+                age == user.age &&
+                pic_number == user.pic_number &&
+                fans_number == user.fans_number &&
+                sub_number == user.sub_number &&
+                Objects.equals(username, user.username) &&
+                Objects.equals(gender, user.gender) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(create_time, user.create_time) &&
+                Objects.equals(telephone, user.telephone) &&
+                Objects.equals(email, user.email) &&
+                Objects.equals(profile_picture, user.profile_picture) &&
+                Objects.equals(background_image, user.background_image);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uid, username, gender, password, age, create_time, telephone, email, pic_number, fans_number, sub_number, profile_picture, background_image);
     }
 }

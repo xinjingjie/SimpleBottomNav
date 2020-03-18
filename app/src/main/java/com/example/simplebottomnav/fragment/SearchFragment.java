@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
@@ -23,8 +24,11 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.simplebottomnav.R;
 import com.example.simplebottomnav.fragment.search_viewpager.SearchPicFragment;
+import com.example.simplebottomnav.fragment.search_viewpager.SearchPicViewModel;
 import com.example.simplebottomnav.fragment.search_viewpager.SearchTagFragment;
 import com.example.simplebottomnav.fragment.search_viewpager.SearchUserFragment;
+import com.example.simplebottomnav.fragment.search_viewpager.SearchUserViewModel;
+import com.example.simplebottomnav.repository.LoadPic;
 import com.example.simplebottomnav.viewmodel.SearchViewModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -132,20 +136,26 @@ public class SearchFragment extends Fragment implements MaterialSearchBar.OnSear
     @Override
     public void onSearchConfirmed(CharSequence text) {
         search_word = searchBar.getText();
-        SearchPicFragment.setSearch_word(search_word);
+        SearchPicViewModel searchPicViewModel = new ViewModelProvider(requireActivity(), new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(SearchPicViewModel.class);
+        searchPicViewModel.setSearchPhotoLiveData(LoadPic.FIND_TYPE_CONTENT, search_word);
+        //SearchPicFragment.setSearch_word(search_word);
+        SearchUserViewModel searchUserViewModel = new ViewModelProvider(requireActivity(), new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(SearchUserViewModel.class);
+        searchUserViewModel.setSearchUserLivaData(search_word);
         final Handler handler = new Handler();
         Runnable runnable = new Runnable() {
-
             @Override
             public void run() {
                 if ( SearchPicFragment.result == 0 ) {
-                    Toast toast = Toast.makeText(requireActivity(), "没有搜索到！", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER | Gravity.FILL_HORIZONTAL, 0, 0);
-                    toast.show();
+                    if (requireContext() != null) {
+                        Toast toast = Toast.makeText(requireContext(), "没有搜索到！", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.CENTER | Gravity.FILL_HORIZONTAL, 0, 0);
+                        toast.show();
+                    }
+
                 }
             }
         };
-        handler.postDelayed(runnable, 5000);
+        handler.postDelayed(runnable, 3000);
 
     }
 

@@ -58,4 +58,10 @@ dependencies {
     implementation 'androidx.test.espresso:espresso-accessibility:3.3.0-alpha04'
     /* 标签选择*/
     implementation 'me.gujun.android.taggroup:library:1.4@aar'
+    def room_version = "2.2.3"
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    // Test helpers
+    testImplementation "androidx.room:room-testing:$room_version"
+    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
 }
