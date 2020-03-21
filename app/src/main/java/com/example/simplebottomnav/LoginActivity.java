@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        preference = this.getApplication().getSharedPreferences("login_info",
+        preference = this.getApplication().getSharedPreferences(MainActivity.login_shpName,
                 MODE_PRIVATE);
         boolean isLogin = preference.getBoolean("isLogin", false);
         if (isLogin) {
@@ -149,8 +149,10 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putInt("UID", loginUser.getUid());
                     editor.putInt("fans_number", loginUser.getFans_number());
                     editor.putInt("sub_number", loginUser.getSub_number());
-                    editor.putString("profile_picture", loginUser.getProfile_picture());
-                    editor.putString("background_image", loginUser.getBackground_image());
+                    String profilePic = loginUser.getProfile_picture() == null ? "http://192.168.2.107:8080/profilePicture/logo.png" : loginUser.getProfile_picture();
+                    editor.putString("profile_picture", profilePic);
+                    String backgroundPic = loginUser.getBackground_image() == null ? "http://192.168.2.107:8080/backgroundPic/donut.jpg" : loginUser.getBackground_image();
+                    editor.putString("background_image", backgroundPic);
                     editor.putBoolean("isLogin", true);
                     editor.apply();
 

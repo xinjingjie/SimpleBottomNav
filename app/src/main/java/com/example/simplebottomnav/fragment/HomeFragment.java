@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.SavedStateViewModelFactory;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
@@ -68,8 +69,9 @@ public class HomeFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        SavedStateViewModelFactory factory = new SavedStateViewModelFactory(requireActivity().getApplication(), requireActivity());
 
-        mViewModel = new ViewModelProvider(requireActivity(), new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(PicViewModel.class);
+        mViewModel = new ViewModelProvider(requireActivity(), factory).get(PicViewModel.class);
         viewPager2.setAdapter(new FragmentStateAdapter(requireActivity()) {
             @Override
             public int getItemCount() {
@@ -159,6 +161,18 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mViewModel != null) {
+            mViewModel.uploadData();
+//            SharedPreferences likedPreferences=requireActivity().getSharedPreferences(MainActivity.liked_prefName,requireContext().MODE_PRIVATE);
+//            SharedPreferences.Editor editor=likedPreferences.edit();
+//            editor.remove("isFresh");
+//            editor.apply();
+        }
+
+    }
 
 }
 

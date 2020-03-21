@@ -44,15 +44,7 @@ public class FetchUserPics {
         username = preference.getString("username", null);
         fetchData(uid);
         final Handler handler = new Handler();
-        Runnable runnable = new Runnable() {
-
-            @Override
-            public void run() {
-
-                saveAllUserPics();
-
-            }
-        };
+        Runnable runnable = () -> saveAllUserPics();
         handler.postDelayed(runnable, 5000);
     }
 
@@ -77,27 +69,34 @@ public class FetchUserPics {
     }
 
     private void saveAllUserPics() {
-        Log.d("TAG", "saveAllUserPics: " + getAllUserPics().size());
-        for (int i = 0; i < getAllUserPics().size(); i++) {
-            try {
-                Picture picture = allUserPics.get(i);
-                String path = new DetailPicFragment.SavePic().execute(picture.getLocation(), application.getApplicationContext()).get();
-                Picture insertPicture = new Picture(uid, username,
-                        picture.getUpdate_time(),
-                        path, picture.getLikes(),
-                        picture.getComments(),
-                        picture.getContent(),
-                        picture.getTags(),
-                        null);
-                repository.insertPics(insertPicture);
+        if (getAllUserPics().size() != 0) {
+            Log.d("TAG", "saveAllUserPics: " + getAllUserPics().size());
+            for (int i = 0; i < getAllUserPics().size(); i++) {
+                try {
+                    Picture picture = allUserPics.get(i);
+                    String path = new DetailPicFragment.SavePic().execute(picture.getLocation(), application.getApplicationContext()).get();
+                    Picture insertPicture = new Picture(uid, username,
+                            picture.getUpdate_time(),
+                            path, picture.getLikes(),
+                            picture.getComments(),
+                            picture.getContent(),
+                            picture.getTags(),
+                            null);
+                    repository.insertPics(insertPicture);
 
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
+            SharedPreferences.Editor editor = preference.edit();
+            editor.putBoolean("isNeedDownLoad", false);
+            editor.apply();
         }
+
         try {
-            String backgroundPic = preference.getString("background_image", null);
-            String profilePic = preference.getString("profile_picture", null);
+            String backgroundPic = preference.getString("background_image", "http://192.168.2.107:8080/backgroundPic/donut.jpg");
+            String profilePic = preference.getString("profile_picture", "http://192.168.2.107:8080/profilePicture/logo.png");
+            Log.d("saveAllUserPics", "saveAllUserPics: " + profilePic);
             String backgroundPicPath = new DetailPicFragment.SavePic().execute(backgroundPic, application.getApplicationContext()).get();
             Picture backGroundPic = new Picture(uid, username, null, backgroundPicPath, 0, 0, null, null, "background");
             String profilePicPath = new DetailPicFragment.SavePic().execute(profilePic, application.getApplicationContext()).get();

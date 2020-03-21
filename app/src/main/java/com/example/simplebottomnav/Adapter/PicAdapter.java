@@ -1,12 +1,12 @@
 package com.example.simplebottomnav.Adapter;
 
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -16,7 +16,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.ViewModel;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DiffUtil;
@@ -28,6 +27,7 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.example.simplebottomnav.MainActivity;
 import com.example.simplebottomnav.R;
 import com.example.simplebottomnav.bean.Picture;
 import com.example.simplebottomnav.repository.GetPicKey;
@@ -39,34 +39,46 @@ import io.supercharge.shimmerlayout.ShimmerLayout;
 
 
 public class PicAdapter extends ListAdapter<Picture, RecyclerView.ViewHolder> {
-    private ViewModel viewModel;
+    private PicViewModel viewModel;
     static int NORMAL_VIEW_TYPE = 0;
     static int FOOTER_VIEW_TYPE = 1;
     private int footer_state = LoadPic.CAN_LOAD_MORE;
     public final static int CARD_VIEW = 0;
     public final static int NORMAL_VIEW = 1;
     private int style;
-
     public void setFooter_state(int footer_state) {
         this.footer_state = footer_state;
     }
 
-    public PicAdapter(ViewModel viewModel, int style) {
+    SharedPreferences likedPreferences;
+
+    public PicAdapter(PicViewModel viewModel, int style) {
         super(new DiffUtil.ItemCallback<Picture>() {
             @Override
             public boolean areItemsTheSame(@NonNull Picture oldItem, @NonNull Picture newItem) {
-                return oldItem.getP_id() == newItem.getP_id();
+                return oldItem.equals(newItem);
             }
 
             @Override
             public boolean areContentsTheSame(@NonNull Picture oldItem, @NonNull Picture newItem) {
-                return oldItem.equals(newItem);
+                return oldItem.getP_id() == newItem.getP_id();
 
             }
         });
         this.viewModel = viewModel;
         this.style = style;
+        if (likedPreferences == null) {
+            Log.d("likedPreferences", "PicAdapter: is null");
+        }
+//        if (likedPreferences==null){
+//            SharedPreferences.Editor editor=viewModel.getApplication().getSharedPreferences("liked_pref",viewModel.getApplication().getApplicationContext().MODE_PRIVATE).edit();
+//            editor.clear();
+//            editor.apply();
+//        }
+
+        likedPreferences = viewModel.getApplication().getSharedPreferences(MainActivity.liked_prefName, viewModel.getApplication().getApplicationContext().MODE_PRIVATE);
     }
+
 
     @Override
     public int getItemCount() {
@@ -100,45 +112,32 @@ public class PicAdapter extends ListAdapter<Picture, RecyclerView.ViewHolder> {
             holder = new PicViewHolder(view);
             PicViewHolder picHolder = (PicViewHolder) holder;
 
-            picHolder.shimmerLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d("TAG", "onClick: ");
-                    Bundle bundle = new Bundle();
-                    bundle.putBoolean("isProfile", false);
-                    bundle.putParcelable("Detail_Pic", getItem(picHolder.getAdapterPosition()));
-                    NavController navController = Navigation.findNavController(view);
-                    navController.navigate(R.id.action_homeFragment_to_detailPicFragment2, bundle);
-                    //   navController.navigate(R.id.action_searchFragment_to_detailPicFragment2, bundle);
-
-                }
+            picHolder.shimmerLayout.setOnClickListener(v -> {
+                Log.d("TAG", "onClick: ");
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("isProfile", false);
+                bundle.putParcelable("Detail_Pic", getItem(picHolder.getAdapterPosition()));
+                NavController navController = Navigation.findNavController(view);
+                navController.navigate(R.id.action_homeFragment_to_detailPicFragment2, bundle);
+                //   navController.navigate(R.id.action_searchFragment_to_detailPicFragment2, bundle);
 
             });
             /*
             下拉选项   optionMenu或者ContextMenu
              */
-            picHolder.spinner_button.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    Log.d("TAG", "onItemSelected: +++++++++");
-                }
+//            picHolder.spinner_button.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//                @Override
+//                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                    Log.d("TAG", "onItemSelected: +++++++++");
+//                }
+//
+//                @Override
+//                public void onNothingSelected(AdapterView<?> parent) {
+//
+//                }
+//            });
 
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
 
-                }
-            });
-
-            /*
-            查看评论
-             */
-            picHolder.viewComments.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    NavController navController = Navigation.findNavController(view);
-                    navController.navigate(R.id.action_homeFragment_to_detailCommentsFragment);
-                }
-            });
 
         } else {
             final View view2 = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_pic_footer, parent, false);
@@ -153,6 +152,8 @@ public class PicAdapter extends ListAdapter<Picture, RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder original_holder, int position) {
+        //防止数据错乱粗暴方法
+        // original_holder.setIsRecyclable(false);
         if (position == getItemCount() - 1) {
             FooterViewHolder footerViewHolder = (FooterViewHolder) original_holder;
             Log.d("TAG", "onBindViewHolder: " + footer_state);
@@ -171,7 +172,7 @@ public class PicAdapter extends ListAdapter<Picture, RecyclerView.ViewHolder> {
                     footerViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            PicViewModel picViewModel = (PicViewModel) viewModel;
+                            PicViewModel picViewModel = viewModel;
                             picViewModel.resetData();
                             picViewModel.setPhotoListLive(LoadPic.FIND_TYPE_RECOMMEND, GetPicKey.getLeastKey());
                         }
@@ -206,13 +207,67 @@ public class PicAdapter extends ListAdapter<Picture, RecyclerView.ViewHolder> {
                 }
             }).into(holder.userButton);
 //            holder.likeButton.setImageResource(R.drawable.ic_favorite_border_gray_24dp);
+            int pid = getItem(position).getP_id();
+            if (likedPreferences.contains("" + pid)) {
+                holder.isLike = true;
+                if (!likedPreferences.contains("isFresh")) {
+                    holder.likeText.setText(String.valueOf(Integer.parseInt(holder.likeText.getText().toString()) + 1));
+                }
+                holder.likeButton.setImageResource(R.drawable.ic_favorite_red_24dp);
+            }
+
             holder.likeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    holder.likeButton.setImageResource(R.drawable.ic_favorite_red_24dp);
+                    /*
+                    点赞!
+                     */
+
+                    int uid = viewModel.getSavedStateHandle().get("UID");
+                    //String username = viewModel.getSavedStateHandle().get("username");
+
+                    //把点赞图片id放到prefences里
+                    SharedPreferences.Editor editor = likedPreferences.edit();
+
+                    if (holder.isLike) {
+                        holder.likeButton.setImageResource(R.drawable.ic_favorite_black_24dp);
+                        holder.likeText.setText(String.valueOf(Integer.parseInt(holder.likeText.getText().toString()) - 1));
+                        if (!viewModel.getSavedStateHandle().contains("HAVADATA")) {
+                            viewModel.getSavedStateHandle().set("HAVADATA", true);
+                        }
+                        if (viewModel.getSavedStateHandle().contains("" + pid)) {
+                            viewModel.getSavedStateHandle().remove("" + pid);
+                        }
+                        holder.isLike = false;
+                        editor.remove("" + pid);
+                        editor.apply();
+                    } else {
+                        if (!viewModel.getSavedStateHandle().contains("HAVADATA")) {
+                            viewModel.getSavedStateHandle().set("HAVADATA", true);
+                        }
+                        holder.likeButton.setImageResource(R.drawable.ic_favorite_red_24dp);
+                        holder.likeText.setText(String.valueOf(Integer.parseInt(holder.likeText.getText().toString()) + 1));
+                        viewModel.getSavedStateHandle().set("" + pid, "" + uid);
+                        holder.isLike = true;
+                        editor.putBoolean("" + pid, true);
+                        editor.apply();
+                    }
                 }
             });
 
+ /*
+            查看评论
+             */
+            holder.viewComments.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("pid", getItem(position).getP_id());
+                    NavController navController = Navigation.findNavController(v);
+                    navController.navigate(R.id.action_homeFragment_to_detailCommentsFragment, bundle);
+                }
+            });
 
             Glide.with(holder.itemView)
                     .load(getItem(position).getLocation())
@@ -237,12 +292,13 @@ public class PicAdapter extends ListAdapter<Picture, RecyclerView.ViewHolder> {
     // public abstract static class PicViewHolder
     static class PicViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
-        public ShimmerLayout shimmerLayout;
+        ShimmerLayout shimmerLayout;
         ImageButton likeButton, messageButton;
         CircleImageView userButton;
         TextView likeText, messageText, picDescription, userName, viewComments;
         ConstraintLayout function_layout;
         Spinner spinner_button;
+        boolean isLike = false;
         private PicViewHolder(@NonNull View itemView) {
             super(itemView);
             shimmerLayout = itemView.findViewById(R.id.shimmersw);

@@ -22,10 +22,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.simplebottomnav.R;
+import com.example.simplebottomnav.bean.Picture;
+import com.example.simplebottomnav.repository.PictureRepository;
 import com.example.simplebottomnav.repository.UploadServerUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -44,6 +47,7 @@ public class PostPicFragment extends Fragment {
     private EditText pic_contents, pic_tags;
     private TagGroup tagGroup;
     private String url = "http://192.168.2.107:8080/api/pic/uploadFile";
+    PictureRepository repository;
     public PostPicFragment() {
         // Required empty public constructor
     }
@@ -60,6 +64,7 @@ public class PostPicFragment extends Fragment {
         post_pic = view.findViewById(R.id.post_pic);
         tagGroup = view.findViewById(R.id.TagGroup);
         submit_button = view.findViewById(R.id.submit_button);
+        repository = new PictureRepository(requireContext());
         return view;
     }
 
@@ -77,6 +82,7 @@ public class PostPicFragment extends Fragment {
         });
         assert getArguments() != null;
         String x = getArguments().getString("IMAGEURL");
+
         if (isAndroidQ) {
             post_pic.setImageURI(Uri.parse(x));
         } else {
@@ -87,6 +93,7 @@ public class PostPicFragment extends Fragment {
         SharedPreferences preference = getActivity().getSharedPreferences("login_info",
                 MODE_PRIVATE);
         int uid = preference.getInt("UID", 0);
+        String username = preference.getString("username", null);
         Log.d("button", "onActivityCreated: " + uid);
         if (uid == 0) {
             submit_button.setEnabled(false);
@@ -94,14 +101,26 @@ public class PostPicFragment extends Fragment {
         submit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Log.d("path", "onActivityCreated: " + x);
                 String picContents = pic_contents.getText().toString();
                 String picTags = pic_tags.getText().toString();
-
+                Picture insertPicture = new Picture(uid, username,
+                        new Date().toString(),
+                        x,
+                        0,
+                        0,
+                        picContents,
+                        picTags,
+                        null);
+                repository.insertPics(insertPicture);
+                SharedPreferences.Editor editor = preference.edit();
+                editor.putInt("pic_number", preference.getInt("pic_number", 0) + 1);
+                editor.apply();
                 try {
                     if (isAndroidQ) {
                         submit_button.setEnabled(false);
                         String result = (String) new PostPicTask().execute(getRealPathFromUri(requireContext(), Uri.parse(x)), uid, picContents, picTags, url).get();
+
                         Log.d("TAG", "onClick: " + result);
                         if (!("false".equals(result))) {
                             Toast.makeText(requireActivity(), "发布成功", Toast.LENGTH_SHORT).show();
@@ -113,6 +132,7 @@ public class PostPicFragment extends Fragment {
                         submit_button.setEnabled(false);
                         String result = (String) new PostPicTask().execute(x, uid, picContents, picTags, url).get();
                         Log.d("TAG", "onClick: " + result);
+
                         if (!("false".equals(result))) {
                             Toast.makeText(requireActivity(), "发布成功", Toast.LENGTH_SHORT).show();
                         } else {

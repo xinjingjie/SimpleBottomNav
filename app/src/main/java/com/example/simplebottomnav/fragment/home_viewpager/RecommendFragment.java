@@ -1,5 +1,6 @@
 package com.example.simplebottomnav.fragment.home_viewpager;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.simplebottomnav.Adapter.PicAdapter;
+import com.example.simplebottomnav.MainActivity;
 import com.example.simplebottomnav.R;
 import com.example.simplebottomnav.bean.Picture;
 import com.example.simplebottomnav.repository.GetPicKey;
@@ -62,6 +64,7 @@ public class RecommendFragment extends Fragment {
             @Override
             public void onChanged(List<Picture> pictures) {
                 Log.d("did", "onChanged: " + pictures.size());
+                recyclerView.setItemViewCacheSize(pictures.size());
                 if (mViewModel.getIsToScrollTop()) {
                     Log.d("did", "scrollToTop");
                     RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
@@ -102,7 +105,10 @@ public class RecommendFragment extends Fragment {
                 manager.scrollToPosition(0);
                 mViewModel.resetData();
                 mViewModel.setPhotoListLive(LoadPic.FIND_TYPE_RECOMMEND, GetPicKey.getFreshKey());
-
+                SharedPreferences likedPreferences = requireActivity().getSharedPreferences(MainActivity.liked_prefName, requireContext().MODE_PRIVATE);
+                SharedPreferences.Editor editor = likedPreferences.edit();
+                editor.putBoolean("isFresh", true);
+                editor.apply();
             }
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {

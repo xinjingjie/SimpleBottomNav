@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.simplebottomnav.bean.Picture;
 import com.example.simplebottomnav.repository.PictureRepository;
@@ -13,14 +14,15 @@ import java.util.List;
 
 public class AccountViewModel extends AndroidViewModel {
     private PictureRepository repository;
-
+    private LiveData<List<Picture>> allUserPic = new MutableLiveData<>();
     public AccountViewModel(@NonNull Application application) {
         super(application);
         repository = new PictureRepository(application);
+        allUserPic = repository.getPicsLiveData();
     }
 
     public LiveData<List<Picture>> getAllUserPic() {
-        return repository.getPicsLiveData();
+        return allUserPic;
     }
 
     public void addPic(Picture... pictures) {
@@ -36,12 +38,16 @@ public class AccountViewModel extends AndroidViewModel {
         repository.reset();
     }
 
-    public Picture getProfilePic() {
-        return repository.findProfilePicture();
+    public Picture getProfilePic(int uid) {
+        return repository.findProfilePicture(uid);
     }
 
-    public Picture getBackgroundPic() {
-        return repository.findBackGroundPic();
+    public void updateProfilePic(String location, String uid) {
+        repository.updateProfilePic(location, uid);
+    }
+
+    public Picture getBackgroundPic(int uid) {
+        return repository.findBackGroundPic(uid);
     }
 //    private VolleySingleton volleySingleton;
 //    private MutableLiveData<List<Picture>> searchPhotoLiveData = new MutableLiveData<List<Picture>>();

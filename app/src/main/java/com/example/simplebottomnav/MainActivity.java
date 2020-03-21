@@ -15,6 +15,7 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -42,7 +43,9 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_PICK_FROM_GALLEY = 0x00000011;
     private static final int PERMISSION_CAMERA_REQUEST_CODE = 0x00000012;
     private final int REQUEST_WRITE_EXTERNAL_STORAGE = 1;
-
+    public static final String login_shpName = "login_info";
+    public static final String liked_prefName = "liked_pref";
+    public static final String ServerPath = "http://192.168.2.107:8080/api/";
     //用于保存拍照图片的uri
     private Uri mCameraUri;
     // 是否是Android 10以上手机
@@ -55,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         if (Build.VERSION.SDK_INT < 29 && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE);
         }
@@ -64,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         navController = Navigation.findNavController(this, R.id.fragment);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
-        SharedPreferences preference = this.getApplication().getSharedPreferences("login_info",
+        SharedPreferences preference = this.getApplication().getSharedPreferences(login_shpName,
                 MODE_PRIVATE);
         boolean isLogin = preference.getBoolean("isLogin", false);
         if (!isLogin) {
@@ -76,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         boolean isNeedDownLoad = preference.getBoolean("isNeedDownLoad", true);
         FetchUserPics fetchUserPics = new FetchUserPics(this.getApplication());
         if (isNeedDownLoad) {
+            Log.d("LOADDATA", "onCreate: ");
             fetchUserPics.setAllUserPics();
         }
     }

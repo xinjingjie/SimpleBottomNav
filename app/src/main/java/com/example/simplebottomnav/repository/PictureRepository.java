@@ -1,6 +1,7 @@
 package com.example.simplebottomnav.repository;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -13,14 +14,17 @@ import com.example.simplebottomnav.dao.PicDao;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class PictureRepository {
     private LiveData<List<Picture>> picsLiveData;
     private PicDao picDao;
     private final static String TAG = "PictureRepository";
-
     public PictureRepository(Context context) {
         picDao = AppDatabase.getINSTANCE(context).getPicDao();
-        picsLiveData = picDao.findAll();
+        SharedPreferences sharedPreferences = context.getSharedPreferences("login_info",
+                MODE_PRIVATE);
+        picsLiveData = picDao.findAllById(sharedPreferences.getInt("UID", 0));
     }
 
     public LiveData<List<Picture>> getPicsLiveData() {
@@ -72,24 +76,32 @@ public class PictureRepository {
     }
 
 
-    public Picture findBackGroundPic() {
+    public Picture findBackGroundPic(int uid) {
         try {
-            return new FindBackGroundPic(picDao).execute().get();
+            return new FindBackGroundPic(picDao).execute(uid).get();
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public Picture findProfilePicture() {
+    public Picture findProfilePicture(int uid) {
         try {
-            return new FindProfilePicture(picDao).execute().get();
+            return new FindProfilePicture(picDao).execute(uid).get();
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
         return null;
     }
 
+    public void updateProfilePic(String location, String uid) {
+        try {
+            Log.d(TAG, "updateProfilePic: didok");
+            new UpdateProfilePic(picDao).execute(location, uid).get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 //    public LiveData<List<Picture>> findSimilar(String str) {
 //        StringBuilder sb = new StringBuilder();
 //        for (int i = 0; i < str.length(); i++) {
@@ -184,7 +196,7 @@ public class PictureRepository {
         }
     }
 
-    static class FindBackGroundPic extends AsyncTask<Void, Void, Picture> {
+    static class FindBackGroundPic extends AsyncTask<Integer, Void, Picture> {
         private PicDao picDao;
 
         FindBackGroundPic(PicDao picDao) {
@@ -192,13 +204,13 @@ public class PictureRepository {
         }
 
         @Override
-        protected Picture doInBackground(Void... voids) {
+        protected Picture doInBackground(Integer... integers) {
 
-            return picDao.findBackGroundPic();
+            return picDao.findBackGroundPic(integers[0]);
         }
     }
 
-    static class FindProfilePicture extends AsyncTask<Void, Void, Picture> {
+    static class FindProfilePicture extends AsyncTask<Integer, Void, Picture> {
         private PicDao picDao;
 
         FindProfilePicture(PicDao picDao) {
@@ -206,8 +218,23 @@ public class PictureRepository {
         }
 
         @Override
-        protected Picture doInBackground(Void... voids) {
-            return picDao.findProfilePicture();
+        protected Picture doInBackground(Integer... integers) {
+            return picDao.findProfilePicture(integers[0]);
         }
     }
+
+    static class UpdateProfilePic extends AsyncTask<String, Void, Void> {
+        private PicDao picDao;
+
+        UpdateProfilePic(PicDao picDao) {
+            this.picDao = picDao;
+        }
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            picDao.updateProfilePic(strings[0], Integer.parseInt(strings[1]));
+            return null;
+        }
+    }
+
 }

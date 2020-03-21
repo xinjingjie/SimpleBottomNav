@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.bumptech.glide.Glide;
 import com.example.simplebottomnav.AppDatabase;
 import com.example.simplebottomnav.R;
 import com.example.simplebottomnav.dao.PicDao;
@@ -57,38 +56,5 @@ public class NotifyFragment extends Fragment {
         mViewModel = ViewModelProviders.of(this).get(ExploreViewModel.class);
         // TODO: Use the ViewModel
         //  pictureRepository=new PictureRepository(requireContext());
-        Glide.with(requireView()).load("content://media/external/images/media/18").into(imageView);
-
-//        addButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Picture picture=new Picture(6,"心境界","2018-2-22 2:12:09","htadas",0,0,null,null,null);
-//                picDao.insertPics(picture);
-//                updateView();
-//            }
-//        });
-//
-//        deleteButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                picDao.deleteAll();
-//                updateView();
-//            }
-//        });
-//    }
-//    public void updateView() {
-//
-//
-//        List<Picture> pictures = picDao.findALL();
-//        if (pictures==null){
-//            Log.d(TAG, "updateView: "+null);
-//        }
-//        String x="";
-//        for (int i = 0; i < pictures.size(); i++) {
-//            Picture picture=pictures.get(i);
-//            x+=picture.toString();
-//        }
-//        testwords.setText(x);
-//    }
     }
 }

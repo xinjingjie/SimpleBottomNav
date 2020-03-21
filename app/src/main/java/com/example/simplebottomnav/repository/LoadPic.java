@@ -6,8 +6,6 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.simplebottomnav.bean.Picture;
 import com.example.simplebottomnav.bean.TotalPics;
@@ -95,14 +93,11 @@ public class LoadPic {
                     Log.d("did", "fetchData: success,TotalHits:" + totalPics.getTotalHits());
                     Log.d(TAG, "fetchData: " + totalPics.getHits());
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+                error -> {
 
-                        Log.d("did", "onErrorResponse: " + error.toString());
-                        loadStateLiveData.setValue(NETWORK_ERROR);
-                        isLoading = false;
-                    }
+                    Log.d("did", "onErrorResponse: " + error.toString());
+                    loadStateLiveData.setValue(NETWORK_ERROR);
+                    isLoading = false;
                 }
 
         );

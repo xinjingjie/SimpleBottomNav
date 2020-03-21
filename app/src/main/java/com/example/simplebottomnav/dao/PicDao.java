@@ -26,19 +26,20 @@ public interface PicDao {
     void deleteAll();
 
     //WHERE profile_picture==null order by update_time
-    @Query("SELECT * FROM PICTURE WHERE profile_picture is null order by update_time")
-    LiveData<List<Picture>> findAll();
+    @Query("SELECT * FROM PICTURE WHERE profile_picture is null and user_id=:uid order by update_time")
+    LiveData<List<Picture>> findAllById(int uid);
 
     //  List<Picture> findALL();
     @SuppressWarnings("AndroidUnresolvedRoomSqlReference")
     @Query("DELETE FROM sqlite_sequence;")
     void reset();
 
-    @Query("SELECT * FROM PICTURE WHERE profile_picture='background'")
-    Picture findBackGroundPic();
+    @Query("SELECT * FROM PICTURE WHERE profile_picture='background' AND user_id=:uid")
+    Picture findBackGroundPic(int uid);
 
-    @Query("SELECT * FROM PICTURE WHERE profile_picture='profilePicture'")
-    Picture findProfilePicture();
+    @Query("SELECT * FROM PICTURE WHERE profile_picture='profilePicture' AND user_id=:uid")
+    Picture findProfilePicture(int uid);
 
-
+    @Query("UPDATE PICTURE SET location=:location WHERE profile_picture='profilePicture' AND user_id=:uid")
+    void updateProfilePic(String location, int uid);
 }

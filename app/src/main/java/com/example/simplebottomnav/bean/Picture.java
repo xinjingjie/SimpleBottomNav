@@ -194,11 +194,21 @@ public class Picture implements Parcelable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Picture)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Picture picture = (Picture) o;
         return user_id == picture.user_id &&
+                likes == picture.likes &&
+                comments == picture.comments &&
+                Objects.equals(username, picture.username) &&
                 Objects.equals(update_time, picture.update_time) &&
-                Objects.equals(location, picture.location);
+                Objects.equals(location, picture.location) &&
+                Objects.equals(content, picture.content) &&
+                Objects.equals(tags, picture.tags) &&
+                Objects.equals(profile_picture, picture.profile_picture);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(p_id, user_id, username, update_time, location, likes, comments, content, tags, profile_picture);
+    }
 }

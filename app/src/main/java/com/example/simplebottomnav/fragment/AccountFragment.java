@@ -23,7 +23,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -57,7 +56,7 @@ public class AccountFragment extends Fragment {
     private UserPicAdapter picAdapter;
     private String url2 = "http://192.168.2.107:8080/api/user/updateBackGround";
     private String url1 = "http://192.168.2.107:8080/api/user/updateProfilePic";
-    LiveData<List<Picture>> allUserPics;
+    private LiveData<List<Picture>> allUserPics;
     //List<Picture> allUserPics;
 
     //    boolean isFlesh = true;
@@ -91,7 +90,6 @@ public class AccountFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        //  View view = inflater.inflate(R.layout.account_fragment2, container, false);
         binding = DataBindingUtil.inflate(inflater, R.layout.account_fragment, container, false);
         View view = binding.getRoot();
 
@@ -107,9 +105,10 @@ public class AccountFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(requireActivity(), new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(AccountViewModel.class);
         // TODO: Use the ViewModel
-        SharedPreferences preference = Objects.requireNonNull(getActivity()).getSharedPreferences("login_info",
+        SharedPreferences preference = Objects.requireNonNull(getActivity()).getSharedPreferences(MainActivity.login_shpName,
                 MODE_PRIVATE);
         String pre_username = preference.getString("username", null);
+        int uid = preference.getInt("UID", 0);
         binding.username.setText(pre_username);
         binding.fansNumber.setText(String.valueOf(preference.getInt("fans_number", 0)));
         binding.picNumber.setText(String.valueOf(preference.getInt("pic_number", 0)));
@@ -130,12 +129,20 @@ public class AccountFragment extends Fragment {
 //                    .placeholder(R.drawable.logo)
 //                    .into(binding.profilePicture);
 //        }
-        Picture profilePic = mViewModel.getProfilePic();
+        Picture profilePic = mViewModel.getProfilePic(uid);
         if (profilePic != null) {
             Glide.with(this)
                     .load(profilePic.getLocation())
                     .placeholder(R.drawable.logo)
                     .into(binding.profilePicture);
+            Log.d("loadProfile", "from: sqlite");
+        } else {
+            Glide.with(this)
+                    .load(profile_picture_url)
+                    .placeholder(R.drawable.logo)
+                    .into(binding.profilePicture);
+            Log.d("loadProfile", "from: pref");
+
         }
 
         String profile_background_url = preference.getString("background_image", null);
@@ -213,16 +220,23 @@ public class AccountFragment extends Fragment {
                             builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    SharedPreferences preference = requireActivity().getSharedPreferences(MainActivity.login_shpName,
+                                            MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = preference.edit();
+                                    editor.clear();
+                                    editor.putBoolean("isNeedDownLoad", false);
+                                    editor.apply();
+                                    SharedPreferences likedPref = requireActivity().getSharedPreferences(MainActivity.liked_prefName, MODE_PRIVATE);
+                                    SharedPreferences.Editor likedEditor = likedPref.edit();
+                                    likedEditor.clear();
+                                    likedEditor.apply();
                                     Intent intent = new Intent(getContext(), LoginActivity.class);
                                     startActivity(intent);
                                     getActivity().finish();
                                 }
                             });
-                            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
+                            builder.setNegativeButton("取消", (dialog, which) -> {
 
-                                }
                             });
                             builder.show();
                         } else {
@@ -237,9 +251,8 @@ public class AccountFragment extends Fragment {
             }
 
         });
-        allUserPics = mViewModel.getAllUserPic();
 
-        int uid = preference.getInt("UID", 0);
+
         binding.userPics.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
 
@@ -247,17 +260,15 @@ public class AccountFragment extends Fragment {
         picAdapter = new UserPicAdapter();
         binding.userPics.setAdapter(picAdapter);
         //mViewModel.getSearchPhotoLiveData()
-        allUserPics.observe(getViewLifecycleOwner(), new Observer<List<Picture>>() {
-            @Override
-            public void onChanged(List<Picture> pictures) {
-                Log.d("pic", "onChanged: " + pictures.size());
+        allUserPics = mViewModel.getAllUserPic();
+        allUserPics.observe(getViewLifecycleOwner(), pictures -> {
+            Log.d("pic", "onChanged: " + pictures.size());
 //                if (isFlesh == true) {
-                Log.d("pic", "onChanged: onflesh");
-                picAdapter.submitList(pictures);
+            Log.d("pic", "onChanged: onflesh");
+            picAdapter.submitList(pictures);
 //                }
 //
 //                isFlesh = false;
-            }
         });
 
 
@@ -309,6 +320,8 @@ public class AccountFragment extends Fragment {
                         assert getArguments() != null;
                         Log.d("TAG", "onActivityCreated: " + x);
                         binding.profilePicture.setImageBitmap(BitmapFactory.decodeFile(x));
+                        mViewModel.updateProfilePic(x, String.valueOf(uid));
+
                     }
                     try {
                         String result = (String) new PostPicTask().execute(x, uid, url1).get();

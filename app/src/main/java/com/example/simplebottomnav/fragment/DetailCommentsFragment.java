@@ -1,13 +1,29 @@
 package com.example.simplebottomnav.fragment;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.bumptech.glide.Glide;
+import com.example.simplebottomnav.Adapter.CommentAdapter;
+import com.example.simplebottomnav.MainActivity;
 import com.example.simplebottomnav.R;
+import com.example.simplebottomnav.bean.Picture;
+import com.example.simplebottomnav.databinding.FragmentDetailCommentsBinding;
+import com.example.simplebottomnav.viewmodel.CommentsViewModel;
+
+import java.util.Objects;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +39,10 @@ public class DetailCommentsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    FragmentDetailCommentsBinding binding;
+    SharedPreferences preference;
+    CommentsViewModel mViewModel;
+    CommentAdapter commentAdapter;
 
     public DetailCommentsFragment() {
         // Required empty public constructor
@@ -53,12 +73,60 @@ public class DetailCommentsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_detail_comments, container, false);
+        preference = Objects.requireNonNull(getActivity()).getSharedPreferences(MainActivity.login_shpName,
+                MODE_PRIVATE);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_detail_comments, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mViewModel = new ViewModelProvider(requireActivity(), new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(CommentsViewModel.class);
+        commentAdapter = new CommentAdapter();
+        binding.allComments.setAdapter(commentAdapter);
+        binding.allComments.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
+        mViewModel.setAllComments(getArguments().getInt("pid"));
+        mViewModel.getAllComments().observe(requireActivity(), comments -> commentAdapter.submitList(comments));
+        int uid = preference.getInt("UID", 0);
+        String username = preference.getString("username", null);
+        String profile_picture_url = preference.getString("profile_picture", null);
+        Picture profilePic = mViewModel.getProfilePic(uid);
+        if (profilePic != null) {
+            Glide.with(this)
+                    .load(profilePic.getLocation())
+                    .placeholder(R.drawable.logo)
+                    .into(binding.usericon);
+            Log.d("loadProfile", "from: sqlite" + profilePic.getLocation());
+        } else {
+            Glide.with(this)
+                    .load(profile_picture_url)
+                    .placeholder(R.drawable.logo)
+                    .into(binding.usericon);
+            Log.d("loadProfile", "from: pref" + profile_picture_url);
+
+        }
+
+        binding.sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (binding.commentMessage.getText() != null) {
+                    int pid = getArguments().getInt("pid");
+                    Log.d("pid", "onClick: " + pid);
+                    mViewModel.uploadComment(pid, uid, username, binding.commentMessage.getText().toString());
+                    binding.commentMessage.setText("");
+                    mViewModel.setAllComments(pid);
+
+                }
+
+            }
+        });
     }
 }
