@@ -1,5 +1,6 @@
 package com.example.simplebottomnav.Adapter;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +8,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,7 +21,6 @@ import com.example.simplebottomnav.bean.User;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SearchUserAdapter extends ListAdapter<User, SearchUserAdapter.UserViewHolder> {
-
 
     public SearchUserAdapter() {
         super(new DiffUtil.ItemCallback<User>() {
@@ -48,6 +50,17 @@ public class SearchUserAdapter extends ListAdapter<User, SearchUserAdapter.UserV
         holder.fans_number.setText(String.valueOf(getItem(position).getFans_number()));
         holder.username.setText(getItem(position).getUsername());
         holder.pics_number.setText(String.valueOf(getItem(position).getPic_number()));
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("uid", getItem(position).getUid());
+                NavController navController = Navigation.findNavController(v);
+                navController.navigate(R.id.action_searchFragment_to_otherUserFragment, bundle);
+            }
+        };
+        holder.profile_image.setOnClickListener(listener);
+        holder.username.setOnClickListener(listener);
     }
 
     class UserViewHolder extends RecyclerView.ViewHolder {

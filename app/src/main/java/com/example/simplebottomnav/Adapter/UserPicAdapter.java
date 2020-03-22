@@ -28,8 +28,9 @@ import io.supercharge.shimmerlayout.ShimmerLayout;
 
 public class UserPicAdapter extends ListAdapter<Picture, UserPicAdapter.UserPicViewHolder> {
 
+    private String from;
 
-    public UserPicAdapter() {
+    public UserPicAdapter(String from) {
         super(new DiffUtil.ItemCallback<Picture>() {
             @Override
             public boolean areItemsTheSame(@NonNull Picture oldItem, @NonNull Picture newItem) {
@@ -41,22 +42,13 @@ public class UserPicAdapter extends ListAdapter<Picture, UserPicAdapter.UserPicV
                 return oldItem.equals(newItem);
             }
         });
+        this.from = from;
     }
 
     @NonNull
     @Override
     public UserPicViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         final UserPicAdapter.UserPicViewHolder holder = new UserPicAdapter.UserPicViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.search_pic_cell, parent, false));
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Bundle bundle = new Bundle();
-//                bundle.putParcelable("Detail_Pic", getItem(holder.getAdapterPosition()));
-//                NavController navController = Navigation.findNavController(v);
-//                navController.navigate(R.id.action_searchFragment_to_detailPicFragment2, bundle);
-//
-//            }
-//        });
         return holder;
     }
 
@@ -93,7 +85,12 @@ public class UserPicAdapter extends ListAdapter<Picture, UserPicAdapter.UserPicV
                 picture.setLocation(getItem(position).getLocation());
                 bundle.putParcelable("Detail_Pic", picture);
                 NavController navController = Navigation.findNavController(v);
-                navController.navigate(R.id.action_accountFragment_to_detailPicFragment2, bundle);
+                if ("MINE".equals(from)) {
+                    navController.navigate(R.id.action_accountFragment_to_detailPicFragment2, bundle);
+                } else {
+                    navController.navigate(R.id.action_otherUserFragment_to_detailPicFragment2, bundle);
+
+                }
             }
         });
     }

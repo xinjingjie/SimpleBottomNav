@@ -285,7 +285,29 @@ public class PicAdapter extends ListAdapter<Picture, RecyclerView.ViewHolder> {
                         }
                     })
                     .into(holder.imageView);
+
+             /*
+        点击头像
+         */
+
+            View.OnClickListener listener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("uid", getItem(position).getUser_id());
+                    NavController navController = Navigation.findNavController(v);
+                    navController.navigate(R.id.action_homeFragment_to_otherUserFragment, bundle);
+                }
+            };
+            holder.userButton.setOnClickListener(listener);
+
+            /*
+            点击username
+             */
+            holder.userName.setOnClickListener(listener);
+
         }
+
 
     }
 

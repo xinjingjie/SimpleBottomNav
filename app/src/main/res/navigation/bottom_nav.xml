@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_homeFragment_to_accountFragment"
             app:destination="@id/accountFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_otherUserFragment"
+            app:destination="@id/otherUserFragment" />
     </fragment>
     <fragment
         android:id="@+id/accountFragment"
@@ -57,6 +60,9 @@
         <action
             android:id="@+id/action_searchFragment_to_detailPicFragment2"
             app:destination="@id/detailPicFragment2" />
+        <action
+            android:id="@+id/action_searchFragment_to_otherUserFragment"
+            app:destination="@id/otherUserFragment" />
     </fragment>
     <fragment
         android:id="@+id/detailPicFragment2"
@@ -90,5 +96,17 @@
         android:id="@+id/detailCommentsFragment"
         android:name="com.example.simplebottomnav.fragment.DetailCommentsFragment"
         android:label="fragment_detail_comments"
-        tools:layout="@layout/fragment_detail_comments" />
+        tools:layout="@layout/fragment_detail_comments">
+        <action
+            android:id="@+id/action_detailCommentsFragment_to_otherUserFragment"
+            app:destination="@id/otherUserFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/otherUserFragment"
+        android:name="com.example.simplebottomnav.fragment.OtherUserFragment"
+        android:label="OtherUserFragment">
+        <action
+            android:id="@+id/action_otherUserFragment_to_detailPicFragment2"
+            app:destination="@id/detailPicFragment2" />
+    </fragment>
 </navigation>

@@ -105,6 +105,8 @@ public class AccountFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(requireActivity(), new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(AccountViewModel.class);
         // TODO: Use the ViewModel
+
+
         SharedPreferences preference = Objects.requireNonNull(getActivity()).getSharedPreferences(MainActivity.login_shpName,
                 MODE_PRIVATE);
         String pre_username = preference.getString("username", null);
@@ -253,11 +255,11 @@ public class AccountFragment extends Fragment {
         });
 
 
+
         binding.userPics.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
-
         // mViewModel.setPhotoListLive(String.valueOf(uid));
-        picAdapter = new UserPicAdapter();
+        picAdapter = new UserPicAdapter("MINE");
         binding.userPics.setAdapter(picAdapter);
         //mViewModel.getSearchPhotoLiveData()
         allUserPics = mViewModel.getAllUserPic();
@@ -362,7 +364,7 @@ public class AccountFragment extends Fragment {
         }
     }
 
-    class OpenPic2 extends AsyncTask<String, Void, Drawable> {
+    static class OpenPic2 extends AsyncTask<String, Void, Drawable> {
 
         @Override
         protected Drawable doInBackground(String... strings) {

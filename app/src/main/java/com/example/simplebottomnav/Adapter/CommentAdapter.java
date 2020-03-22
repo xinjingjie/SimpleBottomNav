@@ -1,11 +1,14 @@
 package com.example.simplebottomnav.Adapter;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -51,6 +54,16 @@ public class CommentAdapter extends ListAdapter<Comment, CommentAdapter.CommentV
         holder.username.setText(getItem(position).getUsername());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         holder.postTime.setText(sdf.format(getItem(position).getCreate_time()));
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("uid", getItem(position).getUid());
+                NavController navController = Navigation.findNavController(v);
+                navController.navigate(R.id.action_detailCommentsFragment_to_otherUserFragment, bundle);
+            }
+        };
+        holder.userProfile.setOnClickListener(listener);
     }
 
     static class CommentViewHolder extends RecyclerView.ViewHolder {

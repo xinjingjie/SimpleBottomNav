@@ -35,8 +35,7 @@
                 android:minHeight="50dp"
                 android:scaleType="centerCrop"
                 android:theme="?attr/actionBarTheme"
-                app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
-                app:menu="@menu/account_menu">
+                app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/linearLayoutCompat"
@@ -146,27 +145,19 @@
                         app:layout_constraintTop_toTopOf="@+id/textView7"
                         tools:text="999" />
 
-                    <TextView
-                        android:id="@+id/edit_button"
+                    <Button
+                        android:id="@+id/button2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="#66000000"
-                        android:text="修改背景"
-                        android:textColor="@color/accent"
-                        android:textSize="14sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/fans_number"
+                        android:background="#00000000"
+                        android:drawableStart="@drawable/ic_add_circle_outline_black_24dp"
+                        android:text="关注"
+                        app:layout_constraintBottom_toTopOf="@+id/guideline37"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/fans_number" />
+                        app:layout_constraintTop_toTopOf="@+id/guideline37" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.appcompat.widget.Toolbar>
-
-            <Button
-                android:id="@+id/button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="#66ffffff"
-                android:text="修改个人信息" />
 
             <View
                 android:id="@+id/divider3"

@@ -38,15 +38,6 @@ public class NotifyFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.notify_fragment, container, false);
-        imageView = view.findViewById(R.id.imageView6);
-        swipeRefreshLayout = view.findViewById(R.id.swipeFav);
-        testwords = view.findViewById(R.id.testwords);
-        addButton = view.findViewById(R.id.addButton);
-        deleteButton = view.findViewById(R.id.deleteButton);
-//        appDatabase = Room.databaseBuilder(requireContext(), AppDatabase.class, "database")
-//               .allowMainThreadQueries()
-//                .build();
-//        picDao = appDatabase.getPicDao();
         return view;
     }
 
