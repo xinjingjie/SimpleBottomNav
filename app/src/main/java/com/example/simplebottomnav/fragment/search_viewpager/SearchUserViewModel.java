@@ -39,6 +39,9 @@ public class SearchUserViewModel extends AndroidViewModel {
         SharedPreferences.Editor editor = relationPreference.edit();
         editor.putString("" + uid, "关注");
         editor.apply();
+        SharedPreferences.Editor editor2 = preferences.edit();
+        editor2.putInt("pic_number", preferences.getInt("pic_number", 0) + 1);
+        editor2.apply();
         new RelationUtil(volleySingleton).Follow(uid, beFollower_id);
     }
 

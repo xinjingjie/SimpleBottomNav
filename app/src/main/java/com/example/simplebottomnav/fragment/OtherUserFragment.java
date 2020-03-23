@@ -46,7 +46,6 @@ public class OtherUserFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        SharedPreferences relationPreference = requireActivity().getSharedPreferences(MainActivity.relation_prefName, Context.MODE_PRIVATE);
 
         mViewModel = ViewModelProviders.of(this).get(OtherUserViewModel.class);
         // TODO: Use the ViewModel
@@ -73,6 +72,7 @@ public class OtherUserFragment extends Fragment {
                     /*
                     查看是否已关注
                      */
+                    SharedPreferences relationPreference = requireActivity().getSharedPreferences(MainActivity.relation_prefName, Context.MODE_PRIVATE);
                     if (relationPreference.contains(String.valueOf(uid))) {
                         binding.followButton.setClickable(false);
                         binding.followButton.setText("已关注");
