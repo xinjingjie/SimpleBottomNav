@@ -1,5 +1,7 @@
 package com.example.simplebottomnav.fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.example.simplebottomnav.Adapter.UserPicAdapter;
+import com.example.simplebottomnav.MainActivity;
 import com.example.simplebottomnav.R;
 import com.example.simplebottomnav.bean.User;
 import com.example.simplebottomnav.databinding.OtherUserFragmentBinding;
@@ -43,6 +46,8 @@ public class OtherUserFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        SharedPreferences relationPreference = requireActivity().getSharedPreferences(MainActivity.relation_prefName, Context.MODE_PRIVATE);
+
         mViewModel = ViewModelProviders.of(this).get(OtherUserViewModel.class);
         // TODO: Use the ViewModel
         if (getArguments() != null) {
@@ -64,6 +69,31 @@ public class OtherUserFragment extends Fragment {
                             e.printStackTrace();
                         }
                     }
+
+                    /*
+                    查看是否已关注
+                     */
+                    if (relationPreference.contains(String.valueOf(uid))) {
+                        binding.followButton.setClickable(false);
+                        binding.followButton.setText("已关注");
+                        binding.followButton.setCompoundDrawables(null, null, null, null);
+                    } else {
+
+                      /*
+            关注
+             */
+                        binding.followButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mViewModel.addFollow(uid);
+                                binding.followButton.setClickable(false);
+                                binding.followButton.setText("已关注");
+                                binding.followButton.setCompoundDrawables(null, null, null, null);
+
+                            }
+                        });
+                    }
+
                 }
             });
             mAdapter = new UserPicAdapter("OTHER");
@@ -74,7 +104,11 @@ public class OtherUserFragment extends Fragment {
                 Log.d("pic", "onChanged: onflesh");
                 mAdapter.submitList(pictures);
             });
+
+
         }
+
+
     }
 
 }

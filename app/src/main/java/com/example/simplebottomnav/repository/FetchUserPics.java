@@ -45,7 +45,7 @@ public class FetchUserPics {
         fetchData(uid);
         final Handler handler = new Handler();
         Runnable runnable = () -> saveAllUserPics();
-        handler.postDelayed(runnable, 5000);
+        handler.postDelayed(runnable, 2000);
     }
 
     private void fetchData(int key) {

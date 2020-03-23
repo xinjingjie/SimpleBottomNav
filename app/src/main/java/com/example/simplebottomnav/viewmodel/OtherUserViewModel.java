@@ -1,6 +1,8 @@
 package com.example.simplebottomnav.viewmodel;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -14,6 +16,7 @@ import com.example.simplebottomnav.MainActivity;
 import com.example.simplebottomnav.bean.Picture;
 import com.example.simplebottomnav.bean.TotalPics;
 import com.example.simplebottomnav.bean.User;
+import com.example.simplebottomnav.repository.RelationUtil;
 import com.example.simplebottomnav.repository.VolleySingleton;
 import com.google.gson.Gson;
 
@@ -21,13 +24,18 @@ import java.util.List;
 
 public class OtherUserViewModel extends AndroidViewModel {
     // TODO: Implement the ViewModel
-    private VolleySingleton volleySingleton;
+    private static VolleySingleton volleySingleton;
     private MutableLiveData<User> foundUser = new MutableLiveData<>();
     private MutableLiveData<List<Picture>> allFoundUserPic = new MutableLiveData<>();
+    SharedPreferences preferences;
+    SharedPreferences relationPreference;
 
     public OtherUserViewModel(@NonNull Application application) {
         super(application);
         volleySingleton = VolleySingleton.getINSTANCE(application);
+        preferences = application.getSharedPreferences(MainActivity.login_shpName, Context.MODE_PRIVATE);
+        relationPreference = application.getSharedPreferences(MainActivity.relation_prefName, Context.MODE_PRIVATE);
+
     }
 
 
@@ -41,6 +49,15 @@ public class OtherUserViewModel extends AndroidViewModel {
         return allFoundUserPic;
     }
 
+    public void addFollow(int beFollower_id) {
+        int uid = preferences.getInt("UID", 0);
+        SharedPreferences.Editor editor = relationPreference.edit();
+        editor.putString("" + uid, "关注");
+        editor.apply();
+        new RelationUtil(volleySingleton).Follow(uid, beFollower_id);
+
+    }
+
     class GetUserTask extends AsyncTask {
         @Override
         protected Object doInBackground(Object[] objects) {
@@ -49,6 +66,7 @@ public class OtherUserViewModel extends AndroidViewModel {
             return null;
         }
     }
+
 
     /*
     获取用户信息
@@ -85,4 +103,8 @@ public class OtherUserViewModel extends AndroidViewModel {
         );
         volleySingleton.getQueue().add(stringRequest);
     }
+    /*
+    添加关注
+     */
+
 }

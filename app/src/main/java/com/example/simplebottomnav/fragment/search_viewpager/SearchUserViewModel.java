@@ -1,6 +1,8 @@
 package com.example.simplebottomnav.fragment.search_viewpager;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -9,7 +11,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.android.volley.toolbox.StringRequest;
+import com.example.simplebottomnav.MainActivity;
 import com.example.simplebottomnav.bean.User;
+import com.example.simplebottomnav.repository.RelationUtil;
 import com.example.simplebottomnav.repository.VolleySingleton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -19,10 +23,23 @@ import java.util.List;
 public class SearchUserViewModel extends AndroidViewModel {
     private VolleySingleton volleySingleton;
     private MutableLiveData<List<User>> searchUserLivaData = new MutableLiveData<>();
+    SharedPreferences preferences;
+    SharedPreferences relationPreference;
 
     public SearchUserViewModel(@NonNull Application application) {
         super(application);
         volleySingleton = VolleySingleton.getINSTANCE(application);
+        preferences = application.getSharedPreferences(MainActivity.login_shpName, Context.MODE_PRIVATE);
+        relationPreference = application.getSharedPreferences(MainActivity.relation_prefName, Context.MODE_PRIVATE);
+
+    }
+
+    public void addFollow(int beFollower_id) {
+        int uid = preferences.getInt("UID", 0);
+        SharedPreferences.Editor editor = relationPreference.edit();
+        editor.putString("" + uid, "关注");
+        editor.apply();
+        new RelationUtil(volleySingleton).Follow(uid, beFollower_id);
     }
 
     public LiveData<List<User>> getSearchUserLivaData() {
@@ -55,4 +72,7 @@ public class SearchUserViewModel extends AndroidViewModel {
         return "http://192.168.2.107:8080/api/user/getUserByKey?key=" + key;
     }
 
+    public boolean isFollowed(int uid) {
+        return relationPreference.contains("" + uid);
+    }
 }

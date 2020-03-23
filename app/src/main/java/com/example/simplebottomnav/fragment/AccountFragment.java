@@ -70,20 +70,7 @@ public class AccountFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-//        SharedPreferences preference = getContext().getSharedPreferences("login_info",
-//                MODE_PRIVATE);
-//        boolean isLogin=preference.getBoolean("isLogin",false);
-//        if (!isLogin){
-//            Intent intent=new Intent(requireActivity(),LoginActivity.class);
-//            startActivity(intent);
-//            requireActivity().finish();
-//        }
         super.onViewCreated(view, savedInstanceState);
-//
-//        boolean isNeedDownLoad=preference.getBoolean("isNeedDownLoad",true);
-//        FetchUserPics fetchUserPics=new FetchUserPics(requireActivity().getApplication());
-//        if (isNeedDownLoad){
-//            fetchUserPics.setAllUserPics();}
         Log.d("pic", "onViewCreated: --------------------------");
     }
 
@@ -212,11 +199,8 @@ public class AccountFragment extends Fragment {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.logout_button:
-                        SharedPreferences preference = getActivity().getSharedPreferences("login_info",
-                                MODE_PRIVATE);
-                        String pre_username = preference.getString("username", null);
                         Log.d("TAG", "onOptionsItemSelected: ");
-                        if (pre_username != null) {
+                        if (uid != 0) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
                             builder.setTitle("确定要退出吗?");
                             builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -227,11 +211,16 @@ public class AccountFragment extends Fragment {
                                     SharedPreferences.Editor editor = preference.edit();
                                     editor.clear();
                                     editor.putBoolean("isNeedDownLoad", false);
+                                    editor.putInt("UID", uid);
                                     editor.apply();
                                     SharedPreferences likedPref = requireActivity().getSharedPreferences(MainActivity.liked_prefName, MODE_PRIVATE);
                                     SharedPreferences.Editor likedEditor = likedPref.edit();
                                     likedEditor.clear();
                                     likedEditor.apply();
+                                    SharedPreferences relationPref = requireActivity().getSharedPreferences(MainActivity.relation_prefName, MODE_PRIVATE);
+                                    SharedPreferences.Editor relationEditor = relationPref.edit();
+                                    relationEditor.clear();
+                                    relationEditor.apply();
                                     Intent intent = new Intent(getContext(), LoginActivity.class);
                                     startActivity(intent);
                                     getActivity().finish();
@@ -258,19 +247,13 @@ public class AccountFragment extends Fragment {
 
         binding.userPics.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
-        // mViewModel.setPhotoListLive(String.valueOf(uid));
         picAdapter = new UserPicAdapter("MINE");
         binding.userPics.setAdapter(picAdapter);
-        //mViewModel.getSearchPhotoLiveData()
         allUserPics = mViewModel.getAllUserPic();
         allUserPics.observe(getViewLifecycleOwner(), pictures -> {
             Log.d("pic", "onChanged: " + pictures.size());
-//                if (isFlesh == true) {
             Log.d("pic", "onChanged: onflesh");
             picAdapter.submitList(pictures);
-//                }
-//
-//                isFlesh = false;
         });
 
 

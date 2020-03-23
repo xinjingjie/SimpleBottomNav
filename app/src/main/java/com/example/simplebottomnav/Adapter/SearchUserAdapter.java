@@ -17,12 +17,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.simplebottomnav.R;
 import com.example.simplebottomnav.bean.User;
+import com.example.simplebottomnav.fragment.search_viewpager.SearchUserViewModel;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SearchUserAdapter extends ListAdapter<User, SearchUserAdapter.UserViewHolder> {
+    private SearchUserViewModel mViewModel;
 
-    public SearchUserAdapter() {
+    public SearchUserAdapter(SearchUserViewModel mViewModel) {
         super(new DiffUtil.ItemCallback<User>() {
             @Override
             public boolean areItemsTheSame(@NonNull User oldItem, @NonNull User newItem) {
@@ -34,6 +36,7 @@ public class SearchUserAdapter extends ListAdapter<User, SearchUserAdapter.UserV
                 return oldItem.equals(newItem);
             }
         });
+        this.mViewModel = mViewModel;
     }
 
     @NonNull
@@ -61,12 +64,30 @@ public class SearchUserAdapter extends ListAdapter<User, SearchUserAdapter.UserV
         };
         holder.profile_image.setOnClickListener(listener);
         holder.username.setOnClickListener(listener);
+
+        if (mViewModel.isFollowed(getItem(position).getUid())) {
+            holder.addAttention.setClickable(false);
+            holder.addAttention.setImageResource(R.drawable.ic_person_black_24dp);
+            holder.follow_message.setText("已关注");
+        } else {
+            holder.addAttention.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mViewModel.addFollow(getItem(position).getUid());
+                    holder.addAttention.setClickable(false);
+                    holder.addAttention.setImageResource(R.drawable.ic_person_black_24dp);
+                    holder.follow_message.setText("已关注");
+                }
+            });
+        }
+
+
     }
 
     class UserViewHolder extends RecyclerView.ViewHolder {
         CircleImageView profile_image;
         ImageButton addAttention;
-        TextView username, fans_number, pics_number;
+        TextView username, fans_number, pics_number, follow_message;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -75,6 +96,7 @@ public class SearchUserAdapter extends ListAdapter<User, SearchUserAdapter.UserV
             username = itemView.findViewById(R.id.username);
             fans_number = itemView.findViewById(R.id.fans_number);
             pics_number = itemView.findViewById(R.id.pics_number);
+            follow_message = itemView.findViewById(R.id.follow_message);
         }
     }
 }

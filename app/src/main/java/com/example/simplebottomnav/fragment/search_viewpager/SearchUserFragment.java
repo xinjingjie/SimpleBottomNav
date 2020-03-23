@@ -42,8 +42,7 @@ public class SearchUserFragment extends Fragment {
         mViewModel = new ViewModelProvider(requireActivity(), new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(SearchUserViewModel.class);
         // TODO: Use the ViewModel
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
-
-        searchUserAdapter = new SearchUserAdapter();
+        searchUserAdapter = new SearchUserAdapter(mViewModel);
         recyclerView.setAdapter(searchUserAdapter);
 
         mViewModel.getSearchUserLivaData().observe(getViewLifecycleOwner(), new Observer<List<User>>() {

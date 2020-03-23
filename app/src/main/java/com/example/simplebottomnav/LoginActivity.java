@@ -1,9 +1,12 @@
 package com.example.simplebottomnav;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,12 +15,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import com.android.volley.toolbox.StringRequest;
 import com.example.simplebottomnav.bean.JsonData;
 import com.example.simplebottomnav.bean.User;
 import com.example.simplebottomnav.repository.MD5Utils;
+import com.example.simplebottomnav.repository.VolleySingleton;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,12 +34,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
+    private final int REQUEST_WRITE_EXTERNAL_STORAGE = 1;
 
     EditText _phoneText;
     EditText _passwordText;
@@ -38,10 +49,13 @@ public class LoginActivity extends AppCompatActivity {
     TextView _signupLink;
     SharedPreferences preference;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if (Build.VERSION.SDK_INT < 29 && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE);
+        }
         preference = this.getApplication().getSharedPreferences(MainActivity.login_shpName,
                 MODE_PRIVATE);
         boolean isLogin = preference.getBoolean("isLogin", false);
@@ -76,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        preference = getSharedPreferences("login_info",
+        preference = getSharedPreferences(MainActivity.login_shpName,
                 MODE_PRIVATE);
         String pre_phoneNumber = preference.getString("phoneNumber", null);
         // String pre_pwd=preference.getString("password","null");
@@ -138,6 +152,11 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
 
                     SharedPreferences.Editor editor = preference.edit();
+                    if (preference.getInt("UID", 0) != loginUser.getUid()) {
+                        editor.putBoolean("isNeedDownLoad", true);
+                        editor.remove("UID");
+                        editor.apply();
+                    }
                     editor.putString("username", loginUser.getUsername());
                     editor.putString("email", loginUser.getEmail());
                     editor.putString("phoneNumber", loginUser.getTelephone());
@@ -155,7 +174,7 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putString("background_image", backgroundPic);
                     editor.putBoolean("isLogin", true);
                     editor.apply();
-
+                    new FindAllFollowId().execute(loginUser.getUid());
                     onLoginSuccess();
                 }
             }
@@ -163,26 +182,58 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.dismiss();
         // TODO: Implement your own authentication logic here.
 
-//        new android.os.Handler().postDelayed(
-//                new Runnable() {
-//                    public void run() {
-//                        // On complete call either onLoginSuccess or onLoginFailed
-//
-//                        onLoginSuccess();
-//                        // onLoginFailed();
-//                        progressDialog.dismiss();
-//                    }
-//                }, 3000);
     }
 
+    /*
+    查找所有关注的人的id
+     */
+    class FindAllFollowId extends AsyncTask<Integer, Void, Void> {
+        @Override
+        protected Void doInBackground(Integer... integers) {
+            int uid = integers[0];
+            StringRequest stringRequest = new StringRequest(
+                    StringRequest.Method.GET,
+                    MainActivity.ServerPath + "relation/findAlFollowId?uid=" + uid,
+                    response -> {
+                        List<Integer> allFollowId = new Gson().fromJson(response, new TypeToken<List<Integer>>() {
+                        }.getType());
+                        Log.d("did", "FOLLOW RESULT::" + allFollowId.size());
+                        SharedPreferences relationPreference = getSharedPreferences(MainActivity.relation_prefName,
+                                MODE_PRIVATE);
+                        for (int i = 0; i < allFollowId.size(); i++) {
+                            SharedPreferences.Editor editor = relationPreference.edit();
+                            editor.putString("" + allFollowId.get(i), "关注");
+                            editor.apply();
+                        }
+                    },
+                    error -> Log.d("did", "onErrorResponse: " + error.toString())
 
+            );
+            VolleySingleton.getINSTANCE(getApplication()).getQueue().add(stringRequest);
+            return null;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_WRITE_EXTERNAL_STORAGE:
+                if (grantResults != null && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //给予权限后
+                } else {
+                    Toast.makeText(this, "保存失败！请给予权限", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                break;
+        }
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
-                preference = getSharedPreferences("login_info",
-                        MODE_PRIVATE);
                 String pre_phoneNumber = preference.getString("phoneNumber", null);
                 // String pre_pwd=preference.getString("password","null");
                 if (pre_phoneNumber != null) {
