@@ -40,7 +40,7 @@ public class SearchUserViewModel extends AndroidViewModel {
         editor.putString("" + uid, "关注");
         editor.apply();
         SharedPreferences.Editor editor2 = preferences.edit();
-        editor2.putInt("pic_number", preferences.getInt("pic_number", 0) + 1);
+        editor2.putInt("sub_number", preferences.getInt("sub_number", 0) + 1);
         editor2.apply();
         new RelationUtil(volleySingleton).Follow(uid, beFollower_id);
     }
@@ -72,7 +72,7 @@ public class SearchUserViewModel extends AndroidViewModel {
 
     private String getUrl(String key) {
         Log.d("did", "getUrl: " + key);
-        return "http://192.168.2.107:8080/api/user/getUserByKey?key=" + key;
+        return MainActivity.ServerPath + "user/getUserByKey?key=" + key;
     }
 
     public boolean isFollowed(int uid) {

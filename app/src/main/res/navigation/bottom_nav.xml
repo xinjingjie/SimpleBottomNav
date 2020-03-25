@@ -34,6 +34,9 @@
         <action
             android:id="@+id/action_accountFragment_to_detailPicFragment2"
             app:destination="@id/detailPicFragment2" />
+        <action
+            android:id="@+id/action_accountFragment_to_editInfoFragment"
+            app:destination="@id/editInfoFragment" />
     </fragment>
     <fragment
         android:id="@+id/exploreFragment"
@@ -109,4 +112,9 @@
             android:id="@+id/action_otherUserFragment_to_detailPicFragment2"
             app:destination="@id/detailPicFragment2" />
     </fragment>
+    <fragment
+        android:id="@+id/editInfoFragment"
+        android:name="com.example.simplebottomnav.fragment.EditInfoFragment"
+        android:label="edit_info_fragment"
+        tools:layout="@layout/edit_info_fragment" />
 </navigation>

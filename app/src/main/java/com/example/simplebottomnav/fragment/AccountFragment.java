@@ -54,8 +54,7 @@ public class AccountFragment extends Fragment {
     private AccountViewModel mViewModel;
     AccountFragmentBinding binding;
     private UserPicAdapter picAdapter;
-    private String url2 = "http://192.168.2.107:8080/api/user/updateBackGround";
-    private String url1 = "http://192.168.2.107:8080/api/user/updateProfilePic";
+    private String url1 = MainActivity.ServerPath + "user/updateProfilePic";
     private LiveData<List<Picture>> allUserPics;
     //List<Picture> allUserPics;
 
@@ -250,6 +249,8 @@ public class AccountFragment extends Fragment {
         picAdapter = new UserPicAdapter("MINE");
         binding.userPics.setAdapter(picAdapter);
         allUserPics = mViewModel.getAllUserPic();
+
+
         allUserPics.observe(getViewLifecycleOwner(), pictures -> {
             Log.d("pic", "onChanged: " + pictures.size());
             Log.d("pic", "onChanged: onflesh");
@@ -324,6 +325,16 @@ public class AccountFragment extends Fragment {
                 }
             }
         }
+        /*
+        修改个人信息
+         */
+        binding.button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavController navController = Navigation.findNavController(v);
+                navController.navigate(R.id.action_accountFragment_to_editInfoFragment);
+            }
+        });
     }
 
     static class PostPicTask extends AsyncTask {
@@ -345,6 +356,8 @@ public class AccountFragment extends Fragment {
 
             return "false";
         }
+
+
     }
 
     static class OpenPic2 extends AsyncTask<String, Void, Drawable> {

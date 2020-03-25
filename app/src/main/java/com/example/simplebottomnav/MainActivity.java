@@ -25,7 +25,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.simplebottomnav.repository.FetchUserPics;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.File;
@@ -41,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String login_shpName = "login_info";
     public static final String liked_prefName = "liked_pref";
     public static final String relation_prefName = "relation_pref";
+    //public static final String ServerPath = "http://112.124.44.175/api/";
     public static final String ServerPath = "http://192.168.2.107:8080/api/";
     //用于保存拍照图片的uri
     private Uri mCameraUri;
@@ -70,12 +70,12 @@ public class MainActivity extends AppCompatActivity {
             this.finish();
         }
 
-        boolean isNeedDownLoad = preference.getBoolean("isNeedDownLoad", true);
-        FetchUserPics fetchUserPics = new FetchUserPics(this.getApplication());
-        if (isNeedDownLoad) {
-            Log.d("LOADDATA", "onCreate: ");
-            fetchUserPics.setAllUserPics();
-        }
+//        boolean isNeedDownLoad = preference.getBoolean("isNeedDownLoad", true);
+//        FetchUserPics fetchUserPics = new FetchUserPics(this.getApplication());
+//        if (isNeedDownLoad) {
+//            Log.d("LOADDATA", "onCreate: ");
+//            fetchUserPics.setAllUserPics();
+//        }
     }
 
 

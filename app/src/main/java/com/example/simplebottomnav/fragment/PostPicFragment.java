@@ -21,6 +21,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.simplebottomnav.MainActivity;
 import com.example.simplebottomnav.R;
 import com.example.simplebottomnav.bean.Picture;
 import com.example.simplebottomnav.repository.PictureRepository;
@@ -46,7 +47,7 @@ public class PostPicFragment extends Fragment {
     private Button submit_button;
     private EditText pic_contents, pic_tags;
     private TagGroup tagGroup;
-    private String url = "http://192.168.2.107:8080/api/pic/uploadFile";
+    private String url = MainActivity.ServerPath + "pic/uploadFile";
     PictureRepository repository;
     public PostPicFragment() {
         // Required empty public constructor

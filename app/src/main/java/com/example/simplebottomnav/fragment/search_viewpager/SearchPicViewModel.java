@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.example.simplebottomnav.MainActivity;
 import com.example.simplebottomnav.bean.Picture;
 import com.example.simplebottomnav.bean.TotalPics;
 import com.example.simplebottomnav.repository.LoadPic;
@@ -66,11 +67,11 @@ public class SearchPicViewModel extends AndroidViewModel {
         Log.d("did", "getUrl: " + key);
         switch (type) {
             case LoadPic.FIND_TYPE_RECOMMEND:
-                return "http://192.168.2.107:8080/api/pic/getRecommend";
+                return MainActivity.ServerPath + "pic/getRecommend";
             case LoadPic.FIND_TYPE_CONTENT:
-                return "http://192.168.2.107:8080/api/pic/getByContent?key=" + key;
+                return MainActivity.ServerPath + "pic/getByContent?key=" + key;
             case LoadPic.FIND_TYPE_TAG:
-                return "http://192.168.2.107:8080/api/pic/getByTag?key=" + key;
+                return MainActivity.ServerPath + "pic/getByTag?key=" + key;
             // case FIND_TYPE_USER:
 //                return "http://192.168.2.107:8080/api/pic/getByUser?key="+key;
 //            break;

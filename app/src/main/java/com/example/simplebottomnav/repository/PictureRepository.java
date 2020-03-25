@@ -24,7 +24,12 @@ public class PictureRepository {
         picDao = AppDatabase.getINSTANCE(context).getPicDao();
         SharedPreferences sharedPreferences = context.getSharedPreferences("login_info",
                 MODE_PRIVATE);
+        /*
+        从数据库中查询
+         */
         picsLiveData = picDao.findAllById(sharedPreferences.getInt("UID", 0));
+
+
     }
 
     public LiveData<List<Picture>> getPicsLiveData() {

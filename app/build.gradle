@@ -64,4 +64,6 @@ dependencies {
     // Test helpers
     testImplementation "androidx.room:room-testing:$room_version"
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
+    //时间选择器
+    implementation 'com.contrarywind:Android-PickerView:4.1.9'
 }

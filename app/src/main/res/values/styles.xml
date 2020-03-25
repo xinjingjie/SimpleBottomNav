@@ -49,5 +49,4 @@
         <item name="android:textColorPrimary">@color/primary_darker</item>
         <item name="android:background">@color/primary</item>
     </style>
-
 </resources>

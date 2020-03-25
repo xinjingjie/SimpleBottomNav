@@ -16,25 +16,24 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.simplebottomnav.Adapter.PicAdapter;
+import com.example.simplebottomnav.Adapter.SubscribedAdapter;
 import com.example.simplebottomnav.MainActivity;
 import com.example.simplebottomnav.R;
 import com.example.simplebottomnav.bean.Picture;
-import com.example.simplebottomnav.repository.GetPicKey;
 import com.example.simplebottomnav.repository.LoadPic;
-import com.example.simplebottomnav.viewmodel.PicViewModel;
 import com.github.clans.fab.FloatingActionMenu;
 
 import java.util.List;
 
 public class SubscribedFragment extends Fragment {
 
-    private PicViewModel mViewModel;
+    private SubscribedViewModel mViewModel;
     private RecyclerView recyclerView;
-    private PicAdapter picAdapter1;
+    private SubscribedAdapter subscribedAdapter;
     // private PicAdapter picAdapter2;
     private SwipeRefreshLayout swipeRefreshLayout;
     private FloatingActionMenu addButton;
+    SharedPreferences preferences;
     public static SubscribedFragment newInstance() {
         return new SubscribedFragment();
     }
@@ -46,56 +45,37 @@ public class SubscribedFragment extends Fragment {
         View view = inflater.inflate(R.layout.subscribed_fragment, container, false);
         recyclerView = view.findViewById(R.id.home_recyclerView);
         swipeRefreshLayout = view.findViewById(R.id.swipeHome);
+        preferences = requireActivity().getSharedPreferences(MainActivity.login_shpName, requireContext().MODE_PRIVATE);
+
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(requireActivity(), new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(PicViewModel.class);
+        mViewModel = new ViewModelProvider(requireActivity(), new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(SubscribedViewModel.class);
         // TODO: Use the ViewModel
         addButton = requireActivity().findViewById(R.id.addButton);
         recyclerView.setLayoutManager(new GridLayoutManager(requireActivity(), 1));
-        picAdapter1 = new PicAdapter(mViewModel, PicAdapter.NORMAL_VIEW);
+        subscribedAdapter = new SubscribedAdapter();
         // picAdapter2 = new PicAdapter(mViewModel, PicAdapter.CARD_VIEW);
         Log.d("what", "onActivityCreated: ");
-        recyclerView.setAdapter(picAdapter1);
-        mViewModel.getPhotoListLive().observe(getViewLifecycleOwner(), new Observer<List<Picture>>() {
+        recyclerView.setAdapter(subscribedAdapter);
+        mViewModel.getPhotoLiveData().observe(getViewLifecycleOwner(), new Observer<List<Picture>>() {
             @Override
             public void onChanged(List<Picture> pictures) {
-                Log.d("did", "onChanged: " + pictures.size());
+                Log.d("fuckyou", "onChanged: " + pictures.size());
                 recyclerView.setItemViewCacheSize(pictures.size());
-                if (mViewModel.getIsToScrollTop()) {
-                    Log.d("did", "scrollToTop");
-                    RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
-                    manager.scrollToPosition(0);
-
-                    mViewModel.setToScrollTop(false);
-                }
                 //  picAdapter2.submitList(pictures);
-                picAdapter1.submitList(pictures);
+                subscribedAdapter.submitList(pictures);
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
             }
         });
-        mViewModel.getDataState().observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                Log.d("TAG", "onChanged:--- " + integer);
-                picAdapter1.setFooter_state(integer);
-                //   picAdapter2.setFooter_state(integer);
-                //   picAdapter2.notifyItemChanged(picAdapter2.getItemCount() - 1);
-                picAdapter1.notifyItemChanged(picAdapter1.getItemCount() - 1);
-                if (integer == LoadPic.NETWORK_ERROR) {
-                    if (swipeRefreshLayout.isRefreshing()) {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                }
-            }
-        });
-        if (mViewModel.getPhotoListLive().getValue() == null) {
-            mViewModel.setPhotoListLive(LoadPic.FIND_TYPE_RECOMMEND, GetPicKey.getFreshKey());
+
+        if (mViewModel.getPhotoLiveData().getValue() == null) {
+            mViewModel.setPhotoListLive(LoadPic.FIND_TYPE_SUBSCRIBED, String.valueOf(preferences.getInt("UID", 0)));
         }
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -103,46 +83,7 @@ public class SubscribedFragment extends Fragment {
                 Log.d("did", "onRefresh: scrollToTop");
                 RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
                 manager.scrollToPosition(0);
-                mViewModel.resetData();
-                mViewModel.setPhotoListLive(LoadPic.FIND_TYPE_RECOMMEND, GetPicKey.getFreshKey());
-                SharedPreferences likedPreferences = requireActivity().getSharedPreferences(MainActivity.liked_prefName, requireContext().MODE_PRIVATE);
-                SharedPreferences.Editor editor = likedPreferences.edit();
-                editor.putBoolean("isFresh", true);
-                editor.apply();
-            }
-        });
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                switch (newState) {
-                    case RecyclerView.SCROLL_STATE_IDLE:
-                        addButton.setVisibility(View.VISIBLE);
-                        break;
-                    case RecyclerView.SCROLL_STATE_SETTLING:
-                    case RecyclerView.SCROLL_STATE_DRAGGING:
-                        addButton.setVisibility(View.INVISIBLE);
-                        break;
-
-
-                }
-            }
-
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-                if (dy < 0) {
-                    return;
-                }
-                GridLayoutManager layoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
-                int position = layoutManager.findLastVisibleItemPosition();
-                if (position == recyclerView.getAdapter().getItemCount() - 1) {
-                    if (mViewModel.getDataState().getValue() == LoadPic.CAN_LOAD_MORE || mViewModel.getDataState().getValue() == LoadPic.INIT_STATE) {
-                        mViewModel.setPhotoListLive(LoadPic.FIND_TYPE_RECOMMEND, GetPicKey.getLeastKey());
-                    }
-                    //mViewModel.setPhotoListLive(GetPicKey.getFreshKey());
-                }
+                mViewModel.setPhotoListLive(LoadPic.FIND_TYPE_SUBSCRIBED, String.valueOf(preferences.getInt("UID", 0)));
             }
         });
     }

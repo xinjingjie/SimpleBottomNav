@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.android.volley.toolbox.StringRequest;
+import com.example.simplebottomnav.MainActivity;
 import com.example.simplebottomnav.bean.Picture;
 import com.example.simplebottomnav.bean.TotalPics;
 import com.example.simplebottomnav.fragment.DetailPicFragment;
@@ -31,7 +32,7 @@ public class FetchUserPics {
         volleySingleton = VolleySingleton.getINSTANCE(application);
         repository = new PictureRepository(application);
         this.application = application;
-        preference = Objects.requireNonNull(application.getApplicationContext()).getSharedPreferences("login_info",
+        preference = Objects.requireNonNull(application.getApplicationContext()).getSharedPreferences(MainActivity.login_shpName,
                 MODE_PRIVATE);
     }
 
@@ -65,7 +66,7 @@ public class FetchUserPics {
 
     private String getUrl(int key) {
         Log.d("did", "getUrl: " + key);
-        return "http://192.168.2.107:8080/api/pic/getAll?uid=" + key;
+        return MainActivity.ServerPath + "pic/getAll?uid=" + key;
     }
 
     private void saveAllUserPics() {
@@ -94,8 +95,8 @@ public class FetchUserPics {
         }
 
         try {
-            String backgroundPic = preference.getString("background_image", "http://192.168.2.107:8080/backgroundPic/donut.jpg");
-            String profilePic = preference.getString("profile_picture", "http://192.168.2.107:8080/profilePicture/logo.png");
+            String backgroundPic = preference.getString("background_image", "http://112.124.44.175/backgroundPic/donut.jpg");
+            String profilePic = preference.getString("profile_picture", "http://112.124.44.175/profilePicture/logo.png");
             Log.d("saveAllUserPics", "saveAllUserPics: " + profilePic);
             String backgroundPicPath = new DetailPicFragment.SavePic().execute(backgroundPic, application.getApplicationContext()).get();
             Picture backGroundPic = new Picture(uid, username, null, backgroundPicPath, 0, 0, null, null, "background");

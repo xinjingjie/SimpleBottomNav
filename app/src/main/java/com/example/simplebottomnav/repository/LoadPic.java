@@ -7,11 +7,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.android.volley.toolbox.StringRequest;
+import com.example.simplebottomnav.MainActivity;
 import com.example.simplebottomnav.bean.Picture;
 import com.example.simplebottomnav.bean.TotalPics;
 import com.google.gson.Gson;
 
-import java.util.Collections;
 import java.util.List;
 
 public class LoadPic {
@@ -19,6 +19,7 @@ public class LoadPic {
     public final static int FIND_TYPE_TAG = 1;
     public final static int FIND_TYPE_USER = 2;
     public final static int FIND_TYPE_RECOMMEND = 3;
+    public final static int FIND_TYPE_SUBSCRIBED = 4;
     public final static int NO_MORE_DATA = 0;
     public final static int CAN_LOAD_MORE = 1;
     public final static int NETWORK_ERROR = 2;
@@ -63,33 +64,33 @@ public class LoadPic {
     private void fetchData(int type, String key) {
         if (isLoading) return;
         Log.d(TAG, "fetchData: " + currentPage + totalPage + loadStateLiveData.getValue());
-        if (currentPage > totalPage) {
-            loadStateLiveData.setValue(NO_MORE_DATA);
-
-            return;
-        }
+//        if (currentPage > totalPage) {
+//            loadStateLiveData.setValue(NO_MORE_DATA);
+//
+//            return;
+//        }
         isLoading = true;
         StringRequest stringRequest = new StringRequest(
                 StringRequest.Method.GET,
                 getUrl(type, key),
                 response -> {
                     TotalPics totalPics = new Gson().fromJson(response, TotalPics.class);
-                    totalPage = (int) Math.ceil((double) totalPics.getTotalHits() / perPage);
+                    // totalPage = (int) Math.ceil((double) totalPics.getTotalHits() / perPage);
                     if (isNewQuery) {
                         photoLiveData.setValue(totalPics.getHits());
                     } else {
                         if (photoLiveData.getValue() != null) {
                             List<Picture> allPics = totalPics.getHits();
-                            Collections.shuffle(allPics);
-                            photoLiveData.getValue().addAll(allPics);
-                            photoLiveData.setValue(photoLiveData.getValue());
+                            //Collections.shuffle(allPics);
+                            //  photoLiveData.getValue().addAll(allPics);
+                            photoLiveData.setValue(allPics);
                         }
 
                     }
                     loadStateLiveData.setValue(CAN_LOAD_MORE);
                     isLoading = false;
                     isNewQuery = false;
-                    currentPage++;
+                    //  currentPage++;
                     Log.d("did", "fetchData: success,TotalHits:" + totalPics.getTotalHits());
                     Log.d(TAG, "fetchData: " + totalPics.getHits());
                 },
@@ -110,12 +111,14 @@ public class LoadPic {
 //                //"&order=latest" +
 //                "&page=" + currentPage + "&per_page=" + perPage;
         switch (type) {
+            case FIND_TYPE_SUBSCRIBED:
+                return MainActivity.ServerPath + "relation/findAllFollowPic?uid=" + key;
             case FIND_TYPE_RECOMMEND:
-                return "http://192.168.2.107:8080/api/pic/getRecommend";
+                return MainActivity.ServerPath + "pic/getRecommend";
             case FIND_TYPE_CONTENT:
-                return "http://192.168.2.107:8080/api/pic/getByContent?key=" + key;
+                return MainActivity.ServerPath + "pic/getByContent?key=" + key;
             case FIND_TYPE_TAG:
-                return "http://192.168.2.107:8080/api/pic/getByTag?key=" + key;
+                return MainActivity.ServerPath + "pic/getByTag?key=" + key;
             // case FIND_TYPE_USER:
 //                return "http://192.168.2.107:8080/api/pic/getByUser?key="+key;
 //            break;

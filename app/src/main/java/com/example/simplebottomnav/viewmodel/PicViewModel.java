@@ -44,6 +44,7 @@ public class PicViewModel extends AndroidViewModel {
         this.savedStateHandle = handle;
     }
 
+
     public LiveData<List<Picture>> getPhotoListLive() {
         return loadPic.getPhotoLiveData();
     }

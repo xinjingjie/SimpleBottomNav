@@ -321,7 +321,8 @@ public class PicAdapter extends ListAdapter<Picture, RecyclerView.ViewHolder> {
         ConstraintLayout function_layout;
         Spinner spinner_button;
         boolean isLike = false;
-        private PicViewHolder(@NonNull View itemView) {
+
+        PicViewHolder(@NonNull View itemView) {
             super(itemView);
             shimmerLayout = itemView.findViewById(R.id.shimmersw);
             imageView = itemView.findViewById(R.id.imageView);

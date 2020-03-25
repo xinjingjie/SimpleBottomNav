@@ -16,23 +16,12 @@ public class User {
     private int sub_number;
     private String profile_picture;
     private String background_image;
+    private String birthday;
     public User() {
     }
 
-    public User(String username, String gender, String password, int age, String create_time, String telephone, String email, int pic_number, String profile_picture, String background_image) {
-        this.username = username;
-        this.gender = gender;
-        this.password = password;
-        this.age = age;
-        this.create_time = create_time;
-        this.telephone = telephone;
-        this.email = email;
-        this.pic_number = pic_number;
-        this.profile_picture = profile_picture;
-        this.background_image = background_image;
-    }
-
-    public User(String username, String gender, String password, int age, String create_time, String telephone, String email, int pic_number, int fans_number, int sub_number, String profile_picture, String background_image) {
+    public User(int uid, String username, String gender, String password, int age, String create_time, String telephone, String email, int pic_number, int fans_number, int sub_number, String profile_picture, String background_image, String birthday) {
+        this.uid = uid;
         this.username = username;
         this.gender = gender;
         this.password = password;
@@ -45,6 +34,45 @@ public class User {
         this.sub_number = sub_number;
         this.profile_picture = profile_picture;
         this.background_image = background_image;
+        this.birthday = birthday;
+    }
+
+    public User(String username, String gender, String password, int age, String create_time, String telephone, String email, int pic_number, String profile_picture, String background_image, String birthday) {
+        this.username = username;
+        this.gender = gender;
+        this.password = password;
+        this.age = age;
+        this.create_time = create_time;
+        this.telephone = telephone;
+        this.email = email;
+        this.pic_number = pic_number;
+        this.profile_picture = profile_picture;
+        this.background_image = background_image;
+        this.birthday = birthday;
+    }
+
+    public User(String username, String gender, String password, int age, String create_time, String telephone, String email, int pic_number, int fans_number, int sub_number, String profile_picture, String background_image, String birthday) {
+        this.username = username;
+        this.gender = gender;
+        this.password = password;
+        this.age = age;
+        this.create_time = create_time;
+        this.telephone = telephone;
+        this.email = email;
+        this.pic_number = pic_number;
+        this.fans_number = fans_number;
+        this.sub_number = sub_number;
+        this.profile_picture = profile_picture;
+        this.background_image = background_image;
+        this.birthday = birthday;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 
     public String getProfile_picture() {

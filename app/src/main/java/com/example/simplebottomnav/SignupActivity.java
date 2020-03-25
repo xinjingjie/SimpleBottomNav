@@ -210,7 +210,7 @@ public class SignupActivity extends AppCompatActivity {
 
     static class LogUpTask extends AsyncTask {
         // private final static String path = "http://112.124.44.175:8080/api/user/testRegister";
-        private final static String path = "http://192.168.2.107:8080/api/user/testRegister";
+        private final static String path = MainActivity.ServerPath + "user/testRegister";
 
         @Override
         protected Object doInBackground(Object[] objects) {
@@ -219,7 +219,7 @@ public class SignupActivity extends AppCompatActivity {
             String phone = objects[2].toString();
             String pwd = objects[3].toString();
             //Gson dateGson=new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create(); dateGson.toJson(new Date())
-            User user = new User(name, "null", pwd, 0, null, phone, email, 0, null, null);
+            User user = new User(name, "null", pwd, 0, null, phone, email, 0, null, null, null);
             Gson gson = new Gson();
             String jsonData = gson.toJson(user);
             Log.d(TAG, "doInBackground: " + jsonData);

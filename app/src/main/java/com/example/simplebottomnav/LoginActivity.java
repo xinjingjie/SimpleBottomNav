@@ -166,6 +166,7 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putString("create_time", loginUser.getCreate_time());
                     editor.putInt("pic_number", loginUser.getPic_number());
                     editor.putInt("UID", loginUser.getUid());
+                    editor.putString("birthday", loginUser.getBirthday());
                     editor.putInt("fans_number", loginUser.getFans_number());
                     editor.putInt("sub_number", loginUser.getSub_number());
                     String profilePic = loginUser.getProfile_picture() == null ? "http://192.168.2.107:8080/profilePicture/logo.png" : loginUser.getProfile_picture();
@@ -288,7 +289,7 @@ public class LoginActivity extends AppCompatActivity {
 
     static class LoginTask extends AsyncTask {
         //        private final static String path = "http://112.124.44.175:8080/api/user/testSend";
-        private final static String path = "http://192.168.2.107:8080/api/user/testSend";
+        private final static String path = MainActivity.ServerPath + "user/testSend";
 
         @Override
         protected Object doInBackground(Object[] objects) {
