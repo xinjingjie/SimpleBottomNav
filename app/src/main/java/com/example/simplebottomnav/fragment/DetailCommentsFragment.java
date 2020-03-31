@@ -123,7 +123,7 @@ public class DetailCommentsFragment extends Fragment {
                     mViewModel.uploadComment(pid, uid, username, binding.commentMessage.getText().toString());
                     binding.commentMessage.setText("");
                     mViewModel.setAllComments(pid);
-
+                    commentAdapter.notifyDataSetChanged();
                 }
 
             }

@@ -10,11 +10,16 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -35,6 +40,7 @@ import com.example.simplebottomnav.MainActivity;
 import com.example.simplebottomnav.R;
 import com.example.simplebottomnav.bean.Picture;
 import com.example.simplebottomnav.databinding.AccountFragmentBinding;
+import com.example.simplebottomnav.repository.MD5Utils;
 import com.example.simplebottomnav.repository.UploadServerUtil;
 import com.example.simplebottomnav.viewmodel.AccountViewModel;
 
@@ -46,6 +52,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
+
+import me.shaohui.bottomdialog.BottomDialog;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -199,41 +207,17 @@ public class AccountFragment extends Fragment {
                 switch (item.getItemId()) {
                     case R.id.logout_button:
                         Log.d("TAG", "onOptionsItemSelected: ");
-                        if (uid != 0) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
-                            builder.setTitle("确定要退出吗?");
-                            builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    SharedPreferences preference = requireActivity().getSharedPreferences(MainActivity.login_shpName,
-                                            MODE_PRIVATE);
-                                    SharedPreferences.Editor editor = preference.edit();
-                                    editor.clear();
-                                    editor.putBoolean("isNeedDownLoad", false);
-                                    editor.putInt("UID", uid);
-                                    editor.apply();
-                                    SharedPreferences likedPref = requireActivity().getSharedPreferences(MainActivity.liked_prefName, MODE_PRIVATE);
-                                    SharedPreferences.Editor likedEditor = likedPref.edit();
-                                    likedEditor.clear();
-                                    likedEditor.apply();
-                                    SharedPreferences relationPref = requireActivity().getSharedPreferences(MainActivity.relation_prefName, MODE_PRIVATE);
-                                    SharedPreferences.Editor relationEditor = relationPref.edit();
-                                    relationEditor.clear();
-                                    relationEditor.apply();
-                                    Intent intent = new Intent(getContext(), LoginActivity.class);
-                                    startActivity(intent);
-                                    getActivity().finish();
-                                }
-                            });
-                            builder.setNegativeButton("取消", (dialog, which) -> {
+                        BottomDialog.create(requireActivity().getSupportFragmentManager())
 
-                            });
-                            builder.show();
-                        } else {
-                            Intent intent = new Intent(getContext(), LoginActivity.class);
-                            startActivity(intent);
-                            getActivity().finish();
-                        }
+                                .setLayoutRes(R.layout.dialog_bottomsheet)
+                                .setViewListener(new BottomDialog.ViewListener() {
+                                    @Override
+                                    public void bindView(View v) {
+                                        initView(v);
+
+                                    }
+                                })// dialog layout
+                                .show();
                         return true;
                     default:
                         return false;
@@ -241,7 +225,6 @@ public class AccountFragment extends Fragment {
             }
 
         });
-
 
 
         binding.userPics.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
@@ -375,5 +358,86 @@ public class AccountFragment extends Fragment {
 
             return null;
         }
+    }
+
+    public void initView(final View view) {
+        Button editPassword = view.findViewById(R.id.editpassword);
+        Button logout = view.findViewById(R.id.logout);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences preference = Objects.requireNonNull(getActivity()).getSharedPreferences(MainActivity.login_shpName,
+                        MODE_PRIVATE);
+                String pre_username = preference.getString("username", null);
+                int uid = preference.getInt("UID", 0);
+                if (uid != 0) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+                    builder.setTitle("确定要退出吗?");
+                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            SharedPreferences preference = requireActivity().getSharedPreferences(MainActivity.login_shpName,
+                                    MODE_PRIVATE);
+                            SharedPreferences.Editor editor = preference.edit();
+                            editor.clear();
+                            editor.putBoolean("isNeedDownLoad", false);
+                            editor.putInt("UID", uid);
+                            editor.apply();
+                            SharedPreferences likedPref = requireActivity().getSharedPreferences(MainActivity.liked_prefName, MODE_PRIVATE);
+                            SharedPreferences.Editor likedEditor = likedPref.edit();
+                            likedEditor.clear();
+                            likedEditor.apply();
+                            SharedPreferences relationPref = requireActivity().getSharedPreferences(MainActivity.relation_prefName, MODE_PRIVATE);
+                            SharedPreferences.Editor relationEditor = relationPref.edit();
+                            relationEditor.clear();
+                            relationEditor.apply();
+                            Intent intent = new Intent(getContext(), LoginActivity.class);
+                            startActivity(intent);
+                            getActivity().finish();
+                        }
+                    });
+                    builder.setNegativeButton("取消", (dialog, which) -> {
+
+                    });
+                    builder.show();
+                } else {
+                    Intent intent = new Intent(getContext(), LoginActivity.class);
+                    startActivity(intent);
+                    getActivity().finish();
+                }
+            }
+        });
+        editPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final EditText inputServer = new EditText(requireActivity());
+                inputServer.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
+                inputServer.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                inputServer.setTransformationMethod(new PasswordTransformationMethod());
+                AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+                builder.setTitle("为了安全，请输入您原来的密码").setIcon(android.R.drawable.ic_dialog_info).setView(inputServer)
+                        .setNegativeButton("取消", null);
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        String _password = inputServer.getText().toString();
+                        if (_password != null && !_password.isEmpty()) {
+                            SharedPreferences preferences = getActivity().getSharedPreferences(MainActivity.login_shpName, MODE_PRIVATE);
+                            if (preferences.getString("password", null).equals(MD5Utils.digest(_password))) {
+                                Toast.makeText(requireActivity(), "密码为" + _password, Toast.LENGTH_SHORT).show();
+                                NavController navController = Navigation.findNavController(requireView());
+                                navController.navigate(R.id.action_accountFragment_to_editPasswordFragment);
+
+                            } else {
+                                Toast.makeText(requireActivity(), "密码错误", Toast.LENGTH_SHORT).show();
+
+                            }
+                        } else {
+                            Toast.makeText(requireActivity(), "密码为空", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                builder.show();
+            }
+        });
     }
 }

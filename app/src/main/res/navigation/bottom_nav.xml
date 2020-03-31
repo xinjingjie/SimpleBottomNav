@@ -37,6 +37,9 @@
         <action
             android:id="@+id/action_accountFragment_to_editInfoFragment"
             app:destination="@id/editInfoFragment" />
+        <action
+            android:id="@+id/action_accountFragment_to_editPasswordFragment"
+            app:destination="@id/editPasswordFragment" />
     </fragment>
     <fragment
         android:id="@+id/exploreFragment"
@@ -117,4 +120,8 @@
         android:name="com.example.simplebottomnav.fragment.EditInfoFragment"
         android:label="edit_info_fragment"
         tools:layout="@layout/edit_info_fragment" />
+    <fragment
+        android:id="@+id/editPasswordFragment"
+        android:name="com.example.simplebottomnav.fragment.EditPasswordFragment"
+        android:label="EditPasswordFragment" />
 </navigation>

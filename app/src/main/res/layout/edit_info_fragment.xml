@@ -18,7 +18,7 @@
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/accent"
+            android:background="#F8F8F6"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +51,6 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="30dp"
                 android:layout_weight="1"
-                android:background="@color/accent"
                 android:orientation="horizontal">
 
                 <TextView
@@ -79,7 +78,6 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="30dp"
                 android:layout_weight="1"
-                android:background="@color/accent"
                 android:orientation="horizontal">
 
                 <TextView
@@ -98,7 +96,7 @@
                     android:layout_weight="8"
                     android:autofillHints=""
                     android:ems="10"
-                    android:inputType="date" />
+                    android:inputType="text" />
 
             </LinearLayout>
 
@@ -107,7 +105,6 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="30dp"
                 android:layout_weight="1"
-                android:background="@color/accent"
                 android:orientation="horizontal">
 
                 <TextView
@@ -134,7 +131,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="30dp"
                 android:layout_weight="1"
-                android:background="@color/accent"
                 android:orientation="horizontal">
 
                 <TextView
@@ -162,7 +158,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="30dp"
                 android:layout_weight="1"
-                android:background="@color/accent"
                 android:orientation="horizontal">
 
                 <TextView

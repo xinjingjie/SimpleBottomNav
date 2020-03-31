@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +33,7 @@ public class SubscribedFragment extends Fragment {
     private SubscribedAdapter subscribedAdapter;
     // private PicAdapter picAdapter2;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private TextView subscribe_tip;
     private FloatingActionMenu addButton;
     SharedPreferences preferences;
     public static SubscribedFragment newInstance() {
@@ -46,7 +48,7 @@ public class SubscribedFragment extends Fragment {
         recyclerView = view.findViewById(R.id.home_recyclerView);
         swipeRefreshLayout = view.findViewById(R.id.swipeHome);
         preferences = requireActivity().getSharedPreferences(MainActivity.login_shpName, requireContext().MODE_PRIVATE);
-
+        subscribe_tip = view.findViewById(R.id.subscribe_tip);
         return view;
     }
 
@@ -66,6 +68,9 @@ public class SubscribedFragment extends Fragment {
             public void onChanged(List<Picture> pictures) {
                 Log.d("fuckyou", "onChanged: " + pictures.size());
                 recyclerView.setItemViewCacheSize(pictures.size());
+                if (pictures.size() != 0) {
+                    subscribe_tip.setVisibility(View.GONE);
+                }
                 //  picAdapter2.submitList(pictures);
                 subscribedAdapter.submitList(pictures);
                 if (swipeRefreshLayout.isRefreshing()) {

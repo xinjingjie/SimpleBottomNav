@@ -66,4 +66,7 @@ dependencies {
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
     //时间选择器
     implementation 'com.contrarywind:Android-PickerView:4.1.9'
+    //底部菜单
+    implementation 'me.shaohui:bottomdialog:1.1.9'
+
 }

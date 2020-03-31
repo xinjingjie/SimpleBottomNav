@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,7 +26,7 @@ public class SearchPicFragment extends Fragment {
     private SearchPicAdapter picAdapter;
     private RecyclerView recyclerView;
     public static int result;
-
+    private TextView search_pic_tip;
     public static SearchPicFragment newInstance() {
         return new SearchPicFragment();
     }
@@ -36,6 +37,7 @@ public class SearchPicFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.search_pic_fragment, container, false);
         recyclerView = view.findViewById(R.id.search_pic_recyclerView);
+        search_pic_tip = view.findViewById(R.id.search_pic_tip);
         return view;
     }
 
@@ -60,6 +62,9 @@ public class SearchPicFragment extends Fragment {
             public void onChanged(List<Picture> pictures) {
                 Log.d("did", "onChanged: " + pictures.size());
                 result = pictures.size();
+                if (result != 0) {
+                    search_pic_tip.setVisibility(View.GONE);
+                }
                 picAdapter.submitList(pictures);
             }
         });

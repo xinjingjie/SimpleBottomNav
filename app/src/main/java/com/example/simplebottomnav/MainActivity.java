@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String login_shpName = "login_info";
     public static final String liked_prefName = "liked_pref";
     public static final String relation_prefName = "relation_pref";
-    //public static final String ServerPath = "http://112.124.44.175/api/";
+    // public static final String ServerPath = "http://112.124.44.175/api/";
     public static final String ServerPath = "http://192.168.2.107:8080/api/";
     //用于保存拍照图片的uri
     private Uri mCameraUri;

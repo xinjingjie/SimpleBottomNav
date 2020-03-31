@@ -258,7 +258,7 @@ public class PicAdapter extends ListAdapter<Picture, RecyclerView.ViewHolder> {
  /*
             查看评论
              */
-            holder.viewComments.setOnClickListener(new View.OnClickListener() {
+            View.OnClickListener commentListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
@@ -267,8 +267,9 @@ public class PicAdapter extends ListAdapter<Picture, RecyclerView.ViewHolder> {
                     NavController navController = Navigation.findNavController(v);
                     navController.navigate(R.id.action_homeFragment_to_detailCommentsFragment, bundle);
                 }
-            });
-
+            };
+            holder.viewComments.setOnClickListener(commentListener);
+            holder.messageButton.setOnClickListener(commentListener);
             Glide.with(holder.itemView)
                     .load(getItem(position).getLocation())
                     .placeholder(R.drawable.ic_photo_gray_24dp)
