@@ -1,5 +1,6 @@
 package com.example.simplebottomnav.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -11,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,6 +28,7 @@ import com.example.simplebottomnav.R;
 import com.example.simplebottomnav.fragment.search_viewpager.SearchPicFragment;
 import com.example.simplebottomnav.fragment.search_viewpager.SearchPicViewModel;
 import com.example.simplebottomnav.fragment.search_viewpager.SearchTagFragment;
+import com.example.simplebottomnav.fragment.search_viewpager.SearchTagViewModel;
 import com.example.simplebottomnav.fragment.search_viewpager.SearchUserFragment;
 import com.example.simplebottomnav.fragment.search_viewpager.SearchUserViewModel;
 import com.example.simplebottomnav.repository.LoadPic;
@@ -141,6 +144,11 @@ public class SearchFragment extends Fragment implements MaterialSearchBar.OnSear
         //SearchPicFragment.setSearch_word(search_word);
         SearchUserViewModel searchUserViewModel = new ViewModelProvider(requireActivity(), new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(SearchUserViewModel.class);
         searchUserViewModel.setSearchUserLivaData(search_word);
+
+        SearchTagViewModel searchTagViewModel = new ViewModelProvider(requireActivity(), new ViewModelProvider.AndroidViewModelFactory(requireActivity().getApplication())).get(SearchTagViewModel.class);
+        searchTagViewModel.setSearchTagLiveData(search_word);
+        InputMethodManager inputMethodManager = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getView().getWindowToken(), 0);
         final Handler handler = new Handler();
         Runnable runnable = new Runnable() {
             @Override

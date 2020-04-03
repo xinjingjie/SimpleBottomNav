@@ -35,8 +35,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -99,26 +101,27 @@ public class EditInfoFragment extends Fragment {
 
         binding.submit.setOnClickListener(v -> {
             SharedPreferences.Editor editor = preference.edit();
-            String[] list = new String[0];
+            List<String> list = new ArrayList<String>();
             try {
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                 String dateString = formatter.format(birthday);
-                list = new String[]{String.valueOf(binding.username.getText()),
-                        String.valueOf(binding.email.getText()),
-                        String.valueOf(binding.telenumber.getText()),
-                        String.valueOf(binding.gender.getText()),
-                        String.valueOf(uid),
-                        dateString,
-                        String.valueOf(getAge(birthday))};
+
+                list.add(String.valueOf(binding.username.getText()));
+                list.add(String.valueOf(binding.email.getText()));
+                list.add(String.valueOf(binding.telenumber.getText()));
+                list.add(String.valueOf(binding.gender.getText()));
+                list.add(String.valueOf(uid));
+                list.add(dateString);
+                list.add(String.valueOf(getAge(birthday)));
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            editor.putString("username", list[0]);
-            editor.putString("email", list[1]);
-            editor.putString("phoneNumber", list[2]);
-            editor.putString("gender", list[3]);
-            editor.putString("birthday", list[5]);
+            editor.putString("username", list.get(0));
+            editor.putString("email", list.get(1));
+            editor.putString("phoneNumber", list.get(2));
+            editor.putString("gender", list.get(3));
+            editor.putString("birthday", list.get(4));
             editor.apply();
             new EditTask().execute(list);
 

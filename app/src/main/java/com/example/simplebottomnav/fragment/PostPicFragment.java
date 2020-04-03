@@ -15,11 +15,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.example.simplebottomnav.MainActivity;
 import com.example.simplebottomnav.R;
@@ -45,15 +48,29 @@ public class PostPicFragment extends Fragment {
     private ImageView post_pic;
     private boolean isAndroidQ = Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q;
     private Button submit_button;
+    private ImageButton deleteTag;
     private EditText pic_contents, pic_tags;
-    private TagGroup tagGroup;
+    private TagGroup tagGroup, addTagGroup;
     private String url = MainActivity.ServerPath + "pic/uploadFile";
     PictureRepository repository;
     public PostPicFragment() {
         // Required empty public constructor
     }
 
+    private TagGroup.OnTagClickListener mTagClickListener = new TagGroup.OnTagClickListener() {
+        @Override
+        public void onTagClick(String tag) {
+            Toast.makeText(requireActivity(), tag, Toast.LENGTH_SHORT).show();
+        }
+    };
 
+    private TagGroup.OnTagClickListener listener = new TagGroup.OnTagClickListener() {
+        @Override
+        public void onTagClick(String tag) {
+            Log.d("TAGCLICK", "onTagClick: " + tag);
+            pic_tags.append("#" + tag);
+        }
+    };
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -66,6 +83,8 @@ public class PostPicFragment extends Fragment {
         tagGroup = view.findViewById(R.id.TagGroup);
         submit_button = view.findViewById(R.id.submit_button);
         repository = new PictureRepository(requireContext());
+        deleteTag = view.findViewById(R.id.deleteTag);
+        addTagGroup = view.findViewById(R.id.addTagGroup);
         return view;
     }
 
@@ -75,12 +94,27 @@ public class PostPicFragment extends Fragment {
 
         tagGroup.setTags(new String[]{"美景", "美食", "自然", "动物", "自在", "灵动"
                 , "暖", "活力"});
-        tagGroup.setOnTagClickListener(new TagGroup.OnTagClickListener() {
+        tagGroup.setOnTagClickListener(listener);
+        tagGroup.setVisibility(View.GONE);
+
+        addTagGroup.setOnTagChangeListener(new TagGroup.OnTagChangeListener() {
             @Override
-            public void onTagClick(String tag) {
+            public void onAppend(TagGroup tagGroup, String tag) {
                 pic_tags.append("#" + tag);
             }
+
+            @Override
+            public void onDelete(TagGroup tagGroup, String tag) {
+
+                String tags = pic_tags.getText().toString();
+                if (tags.length() > 0) {
+                    int lastOne = tags.lastIndexOf("#");
+                    String reTags = tags.substring(0, lastOne);
+                    pic_tags.setText(reTags);
+                }
+            }
         });
+
         assert getArguments() != null;
         String x = getArguments().getString("IMAGEURL");
 
@@ -135,6 +169,10 @@ public class PostPicFragment extends Fragment {
                         Log.d("TAG", "onClick: " + result);
 
                         if (!("false".equals(result))) {
+
+                            NavController navController = Navigation.findNavController(v);
+                            navController.navigate(R.id.action_postPicFragment_to_homeFragment);
+
                             Toast.makeText(requireActivity(), "发布成功", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(requireActivity(), "发布失败", Toast.LENGTH_SHORT).show();
@@ -146,6 +184,17 @@ public class PostPicFragment extends Fragment {
                     e.printStackTrace();
                 }
 
+            }
+        });
+        deleteTag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String tags = pic_tags.getText().toString();
+                if (tags.length() > 0) {
+                    int lastOne = tags.lastIndexOf("#");
+                    String reTags = tags.substring(0, lastOne);
+                    pic_tags.setText(reTags);
+                }
             }
         });
     }
@@ -183,8 +232,6 @@ public class PostPicFragment extends Fragment {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
             return "false";
         }
     }

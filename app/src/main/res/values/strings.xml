@@ -8,7 +8,11 @@
     <string name="item1">举报</string>
     <string name="item2">举报</string>
     <string name="item3">举报</string>
+    <string name="title_activity_tag_editor">编辑标签</string>
+    <string name="add_tags">添加标签</string>
 
+    <string name="submit" translatable="false">Submit</string>
+    <string name="edit" translatable="false">Edit</string>
     <string-array name="spinner_array">
         <item />
         <item>@string/item1</item>

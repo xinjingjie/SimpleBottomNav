@@ -23,6 +23,7 @@ import java.util.List;
 
 public class SearchPicFragment extends Fragment {
     private static SearchPicViewModel mViewModel;
+
     private SearchPicAdapter picAdapter;
     private RecyclerView recyclerView;
     public static int result;
